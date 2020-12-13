@@ -13,7 +13,7 @@ local builtin = require("telescope.builtin")
 local project = function(opts)
 	opts = opts or {}
 
-	local project_dirs = {["init.vim"] = "~/.config/nvim"}
+	local project_dirs = {["nvim config"] = "~/.config/nvim"}
 	local projects = {}
 
 	local search_selected_project = function(selection)
