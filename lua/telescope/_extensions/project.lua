@@ -30,9 +30,9 @@ local select_project = function(opts, projects, run_task_on_selected_project)
 			results = projects,
 			entry_maker = function(entry)
 				return {
-					value = entry.value,
-					display = entry.display,
-					ordinal = entry.ordinal,
+					value = entry.path,
+					display = entry.title,
+					ordinal = entry.title,
 				}
 			end,
 		},
@@ -55,19 +55,15 @@ local project = function(opts)
 	local project_dirs = {}
 
 	check_for_project_dirs_file()
+	local projects = {}
 
 	-- format for projects is title of project=~/this/path/name
 	for line in io.lines(project_dirs_file) do
 		local title, path = line:match("^(.-)=(.-)$")
 		project_dirs[title] = path
-	end
-
-	local projects = {}
-	for k, v in pairs(project_dirs) do
 		table.insert(projects, {
-			value = v,
-			display = k,
-			ordinal = k,
+			title = title,
+			path = path,
 		})
 	end
 
