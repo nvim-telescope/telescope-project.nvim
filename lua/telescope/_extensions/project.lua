@@ -9,42 +9,43 @@ local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
 local builtin = require("telescope.builtin")
-local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.lua'
+-- format for projects is "title of project"="~/this/path/name"
+local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
 local select_project = function(opts, projects, run_task_on_selected_project)
-	pickers.new(opts, {
-		prompt_title = 'Select a project',
-		results_title = 'Projects',
-		finder = finders.new_table {results = projects},
-		sorter = conf.file_sorter(opts),
-		attach_mappings = function(prompt_bufnr)
-			local on_project_selected = function()
-				local selection = actions.get_selected_entry(prompt_bufnr)
-				actions.close(prompt_bufnr)
-				run_task_on_selected_project(selection.value)
-			end
-			actions.goto_file_selection_edit:replace(on_project_selected)
-			return true
-		end
-	}):find()
+	print(vim.inspect(projects))
+	-- pickers.new(opts, {
+	-- 	prompt_title = 'Select a project',
+	-- 	results_title = 'Projects',
+	-- 	finder = finders.new_table {results = projects},
+	-- 	sorter = conf.file_sorter(opts),
+	-- 	attach_mappings = function(prompt_bufnr)
+	-- 		local on_project_selected = function()
+	-- 			local selection = actions.get_selected_entry(prompt_bufnr)
+	-- 			actions.close(prompt_bufnr)
+	-- 			run_task_on_selected_project(selection)
+	-- 		end
+	-- 		actions.goto_file_selection_edit:replace(on_project_selected)
+	-- 		return true
+	-- 	end
+	-- }):find()
 end
 
 local project = function(opts)
 	opts = opts or {}
 
-	-- TODO figure this out:
+	local project_dirs = {}
+	for line in io.lines(project_dirs_file) do
+		local title = (line:match '[^"]+')
+		local path = (line:match [[="([^"]+)]])
+		project_dirs[title]  = path
+	end
 
-	-- local project_dirs = {}
-	-- for line in io.lines(project_dirs_file) do
-	-- 	table.insert(project_dirs, line)
-	-- end
-
-	local project_dirs = {["nvim config"] = "~/.config/nvim"}
 	local projects = {}
 
 	local search_selected_project = function(selection)
-		local selected_directory = project_dirs[selection]
-		builtin.find_files({cwd = selected_directory})
+		print(selection.value.value)
+		builtin.find_files({cwd = selection.value.value})
 	end
 
 	-- TODO allow a way to choose between the above function and this one.
@@ -52,11 +53,15 @@ local project = function(opts)
 		vim.api.nvim_command('Explore ' .. project_dirs[selection])
 	end
 
-	for k in pairs(project_dirs) do
-		table.insert(projects, k)
+	for k,v in pairs(project_dirs) do
+		table.insert(projects, {
+			value = v,
+			display = k,
+			ordinal = k,
+		})
 	end
 
-	select_project(opts, projects, search_selected_project)
+	select_project(opts, projects[1], search_selected_project)
 end
 
 return telescope.register_extension {exports = {project = project}}
