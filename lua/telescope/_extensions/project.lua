@@ -8,7 +8,8 @@ local actions = require("telescope.actions")
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
-local builtin = require("telescope.builtin")
+
+local project_actions = require("actions")
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
@@ -22,7 +23,7 @@ local function check_for_project_dirs_file()
 	end
 end
 
-local select_project = function(opts, projects, run_task_on_selected_project)
+local select_project = function(opts, projects, project_dirs, run_task_on_selected_project)
 	pickers.new(opts, {
 		prompt_title = 'Select a project',
 		results_title = 'Projects',
@@ -67,16 +68,7 @@ local project = function(opts)
 		})
 	end
 
-	local search_selected_project = function(selection)
-		builtin.find_files({cwd = selection.value})
-	end
-
-	-- TODO allow a way to choose between the above function and this one.
-	local open_path_at_selected_project = function(selection)
-		vim.api.nvim_command('Explore ' .. project_dirs[selection])
-	end
-
-	select_project(opts, projects, search_selected_project)
+	select_project(opts, projects, project_dirs, project_actions.search_selected_project)
 end
 
 return telescope.register_extension {exports = {project = project}}
