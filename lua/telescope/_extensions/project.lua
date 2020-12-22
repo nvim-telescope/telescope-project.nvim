@@ -9,21 +9,11 @@ local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
 
-local project_actions = require("project_actions")
+local project_actions = require("telescope._extensions.project_actions")
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
-require('telescope').setup {
-		defaults = {
-			mappings = {
-				n = {
-					['d'] = project_actions.delete_project,
-					['c'] = project_actions.add_project,
-					['f'] = project_actions.find_project_files,
-				}
-			}
-		}
-	}
+require('telescope').setup {}
 
 local function check_for_project_dirs_file()
 	local f = io.open(project_dirs_file, "r")
@@ -38,7 +28,7 @@ local function check_for_project_dirs_file()
 	end
 end
 
-local select_project = function(opts, projects, run_task_on_selected_project)
+local select_project = function(opts, projects)
 	pickers.new(opts, {
 		prompt_title = 'Select a project',
 		results_title = 'Projects',
@@ -53,10 +43,12 @@ local select_project = function(opts, projects, run_task_on_selected_project)
 			end,
 		},
 		sorter = conf.file_sorter(opts),
-		attach_mappings = function(prompt_bufnr)
+		attach_mappings = function(prompt_bufnr, map)
+			map('n', 'd', project_actions.delete_project)
+			map('n', 'c', project_actions.add_project)
+			map('n', 'f', project_actions.find_project_files)
 			local on_project_selected = function()
-				run_task_on_selected_project(prompt_bufnr)
-				actions.close(prompt_bufnr)
+				project_actions.find_project_files(prompt_bufnr)
 			end
 			actions.goto_file_selection_edit:replace(on_project_selected)
 			return true
@@ -79,7 +71,7 @@ local project = function(opts)
 		})
 	end
 
-	select_project(opts, projects, project_actions.find_project_files)
+	select_project(opts, projects)
 end
 
 return telescope.register_extension {exports = {project = project}}

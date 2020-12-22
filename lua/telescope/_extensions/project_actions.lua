@@ -1,42 +1,47 @@
 local builtin = require("telescope.builtin")
 local actions = require("telescope.actions")
-local transform_mod = require('telescope.actions.mt').transform_mod;
+local transform_mod = require('telescope.actions.mt').transform_mod
 
 local project_actions = {}
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
-project_actions.add_project = function()
-	local git_root = vim.fn.systemlist("git -C " .. vim.loop.cwd() .. " rev-parse --show-toplevel")[1]
+project_actions.add_project = function(prompt_bufnr)
+	local git_root = vim.fn.systemlist("git -C " .. vim.loop.cwd() .. " rev-parse --show-toplevel")[
+		1
+	]
+	local project_directory = git_root
 	if not git_root then
-		print('Telescope-project adds projects based on a git root. No project found. Please refer to documentation to add projects manually')
+		project_directory = vim.loop.cwd()
 		return
 	end
 
-	local project_title = git_root:match("[^/]+$")
-	local project_to_add = project_title .. "=" .. git_root
+	local project_title = project_directory:match("[^/]+$")
+	local project_to_add = project_title .. "=" .. project_directory .. "\n"
 
-	local file = assert(io.open(project_dirs_file, "a"), "No project file exists")
-	if not file then
-		return
-	end
+	local file = assert(
+		io.open(project_dirs_file, "a"),
+		"No project file exists"
+	)
 
 	local project_already_added = false
 	for line in io.lines(project_dirs_file) do
-		local project_exists_check = line == project_to_add
-			if project_exists_check then
-				project_already_added = true
-				print('This project already exists.')
-				return
+		local project_exists_check = line .. "\n" == project_to_add
+		if project_exists_check then
+			project_already_added = true
+			print('This project already exists.')
+			return
 		end
 	end
 
 	if not project_already_added then
 		io.output(file)
 		io.write(project_to_add)
-		print('project added')
+		print('project added: ' .. project_title)
 	end
 	io.close(file)
+	actions.close(prompt_bufnr)
+	require'telescope'.extensions.project.project()
 end
 
 project_actions.delete_project = function(prompt_bufnr)
@@ -47,10 +52,15 @@ project_actions.delete_project = function(prompt_bufnr)
 			newLines = newLines .. title .. '=' .. path .. "\n"
 		end
 	end
-	local file = assert(io.open(project_dirs_file, "w"), "No project file exists")
+	local file = assert(
+		io.open(project_dirs_file, "w"),
+		"No project file exists"
+	)
 	file:write(newLines)
 	file:close()
-	print('deleted project: ' .. actions.get_selected_entry(prompt_bufnr).display)
+	print('Project deleted: ' .. actions.get_selected_entry(prompt_bufnr).display)
+	actions.close(prompt_bufnr)
+	require'telescope'.extensions.project.project()
 end
 
 project_actions.find_project_files = function(prompt_bufnr)
