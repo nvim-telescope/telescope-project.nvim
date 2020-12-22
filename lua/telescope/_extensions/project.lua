@@ -31,7 +31,10 @@ local function check_for_project_dirs_file()
 		io.close(f)
 		return true
 	else
-		error('No project file exists')
+		print('Starting telescope-project')
+		local newFile = io.open(project_dirs_file, "w")
+		newFile:write()
+		newFile:close()
 	end
 end
 
@@ -52,8 +55,7 @@ local select_project = function(opts, projects, run_task_on_selected_project)
 		sorter = conf.file_sorter(opts),
 		attach_mappings = function(prompt_bufnr)
 			local on_project_selected = function()
-				local selection = actions.get_selected_entry(prompt_bufnr)
-				run_task_on_selected_project(selection)
+				run_task_on_selected_project(prompt_bufnr)
 				actions.close(prompt_bufnr)
 			end
 			actions.goto_file_selection_edit:replace(on_project_selected)
@@ -77,7 +79,7 @@ local project = function(opts)
 		})
 	end
 
-	select_project(opts, projects, project_actions.search_selected_project)
+	select_project(opts, projects, project_actions.find_project_files)
 end
 
 return telescope.register_extension {exports = {project = project}}
