@@ -30,4 +30,4 @@ vim.api.nvim_set_keymap(
 ## Default mappings (normal mode):
 d: delete currently selected project\
 c: create a project (defaults to your git root if used inside a git project, otherwise will use your current working directory)\
-f: find a file within your project (this works the same as <CR>)
+f: find a file within your project (this works the same as \<CR\>)
