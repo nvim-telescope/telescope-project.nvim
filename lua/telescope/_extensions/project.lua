@@ -9,9 +9,21 @@ local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
 
-local project_actions = require("actions")
+local project_actions = require("project_actions")
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
+
+require('telescope').setup {
+		defaults = {
+			mappings = {
+				n = {
+					['d'] = project_actions.delete_project,
+					['c'] = project_actions.add_project,
+					['f'] = project_actions.find_project_files,
+				}
+			}
+		}
+	}
 
 local function check_for_project_dirs_file()
 	local f = io.open(project_dirs_file, "r")
@@ -23,7 +35,7 @@ local function check_for_project_dirs_file()
 	end
 end
 
-local select_project = function(opts, projects, project_dirs, run_task_on_selected_project)
+local select_project = function(opts, projects, run_task_on_selected_project)
 	pickers.new(opts, {
 		prompt_title = 'Select a project',
 		results_title = 'Projects',
@@ -41,8 +53,8 @@ local select_project = function(opts, projects, project_dirs, run_task_on_select
 		attach_mappings = function(prompt_bufnr)
 			local on_project_selected = function()
 				local selection = actions.get_selected_entry(prompt_bufnr)
-				actions.close(prompt_bufnr)
 				run_task_on_selected_project(selection)
+				actions.close(prompt_bufnr)
 			end
 			actions.goto_file_selection_edit:replace(on_project_selected)
 			return true
@@ -53,22 +65,19 @@ end
 local project = function(opts)
 	opts = opts or {}
 
-	local project_dirs = {}
-
 	check_for_project_dirs_file()
 	local projects = {}
 
 	-- format for projects is title of project=~/this/path/name
 	for line in io.lines(project_dirs_file) do
 		local title, path = line:match("^(.-)=(.-)$")
-		project_dirs[title] = path
 		table.insert(projects, {
 			title = title,
 			path = path,
 		})
 	end
 
-	select_project(opts, projects, project_dirs, project_actions.search_selected_project)
+	select_project(opts, projects, project_actions.search_selected_project)
 end
 
 return telescope.register_extension {exports = {project = project}}
