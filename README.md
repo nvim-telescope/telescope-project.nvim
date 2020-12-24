@@ -2,6 +2,10 @@
 
 An extension for [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) that allows you to switch projects.
 
+## Demo
+
+![Demo](./demo.gif)
+
 ## Setup
 
 You can setup the extension by adding the following to your config:
