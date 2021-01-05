@@ -41,7 +41,7 @@ project_actions.add_project = function(prompt_bufnr)
   end
   io.close(file)
   actions.close(prompt_bufnr)
-  require'telescope'.extensions.project.project()
+  require 'telescope'.extensions.project.project()
 end
 
 project_actions.delete_project = function(prompt_bufnr)
@@ -60,11 +60,15 @@ project_actions.delete_project = function(prompt_bufnr)
   file:close()
   print('Project deleted: ' .. actions.get_selected_entry(prompt_bufnr).display)
   actions.close(prompt_bufnr)
-  require'telescope'.extensions.project.project()
+  require 'telescope'.extensions.project.project()
 end
 
 project_actions.find_project_files = function(prompt_bufnr)
   builtin.find_files({cwd = actions.get_selected_entry(prompt_bufnr).value})
+end
+
+project_actions.search_in_project_files = function(prompt_bufnr)
+  builtin.live_grep({cwd = actions.get_selected_entry(prompt_bufnr).value})
 end
 
 project_actions = transform_mod(project_actions);
