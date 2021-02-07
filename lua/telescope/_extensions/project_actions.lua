@@ -66,7 +66,7 @@ end
 project_actions.find_project_files = function(prompt_bufnr, change_dir)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   if change_dir then
-    vim.cmd("cd "..dir)
+    vim.fn.execute("cd " .. dir, "silent")
   end
   builtin.find_files({cwd = dir})
 end
