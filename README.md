@@ -16,8 +16,19 @@ require'telescope'.load_extension('project')
 
 ## Available functions:
 
+### Project
+
+The projects picker.
+
 ```lua
 require'telescope'.extensions.project.project{}
+```
+
+You can optionally pass in `change_dir = true` in order to change the current
+working directory when a project is selected.
+
+```lua
+require'telescope'.extensions.project.project{ change_dir = true }
 ```
 
 ## Example config: 
