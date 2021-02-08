@@ -49,7 +49,7 @@ local select_project = function(opts, projects)
       map('n', 'f', project_actions.find_project_files)
       map('n', 's', project_actions.search_in_project_files)
       local on_project_selected = function()
-        project_actions.find_project_files(prompt_bufnr)
+        project_actions.find_project_files(prompt_bufnr, opts.change_dir)
       end
       actions.goto_file_selection_edit:replace(on_project_selected)
       return true
