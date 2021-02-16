@@ -71,8 +71,12 @@ project_actions.find_project_files = function(prompt_bufnr, change_dir)
   builtin.find_files({cwd = dir})
 end
 
-project_actions.search_in_project_files = function(prompt_bufnr)
-  builtin.live_grep({cwd = actions.get_selected_entry(prompt_bufnr).value})
+project_actions.search_in_project_files = function(prompt_bufnr, change_dir)
+  local dir = actions.get_selected_entry(prompt_bufnr).value
+  if change_dir then
+    vim.fn.execute("cd " .. dir, "silent")
+  end
+  builtin.live_grep({cwd = dir})
 end
 
 project_actions = transform_mod(project_actions);
