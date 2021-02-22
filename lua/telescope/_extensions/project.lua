@@ -51,7 +51,7 @@ local select_project = function(opts, projects)
       local on_project_selected = function()
         project_actions.find_project_files(prompt_bufnr, opts.change_dir)
       end
-      actions.goto_file_selection_edit:replace(on_project_selected)
+      actions.select_default:replace(on_project_selected)
       return true
     end
   }):find()
