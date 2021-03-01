@@ -63,12 +63,10 @@ project_actions.delete_project = function(prompt_bufnr)
   require 'telescope'.extensions.project.project()
 end
 
-project_actions.find_project_files = function(prompt_bufnr, change_dir)
+project_actions.find_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
-  if change_dir then
-    vim.fn.execute("cd " .. dir, "silent")
-  end
   builtin.find_files({cwd = dir})
+  vim.fn.execute("cd " .. dir, "silent")
 end
 
 project_actions.change_working_directory = function(prompt_bufnr)
