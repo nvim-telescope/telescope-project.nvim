@@ -41,3 +41,6 @@ c: create a project (defaults to your git root if used inside a git project, oth
 s: search inside files within your project\
 w: change to the selected project's directory without opening it\
 f: find a file within your project (this works the same as \<CR\>)
+
+## Roadmap :blue_car:
+- workspaces :construction:
