@@ -24,13 +24,6 @@ The projects picker.
 require'telescope'.extensions.project.project{}
 ```
 
-You can optionally pass in `change_dir = true` in order to change the current
-working directory when a project is selected.
-
-```lua
-require'telescope'.extensions.project.project{ change_dir = true }
-```
-
 ## Example config: 
 
 ```lua
@@ -46,4 +39,5 @@ vim.api.nvim_set_keymap(
 d: delete currently selected project\
 c: create a project (defaults to your git root if used inside a git project, otherwise will use your current working directory)\
 s: search inside files within your project\
+w: change to the selected project's directory without opening it\
 f: find a file within your project (this works the same as \<CR\>)
