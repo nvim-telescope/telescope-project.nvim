@@ -1,8 +1,31 @@
 local builtin = require("telescope.builtin")
 local actions = require("telescope.actions")
+local state = require('telescope.state')
+local action_state = require('telescope.actions.state')
 local transform_mod = require('telescope.actions.mt').transform_mod
 
 local project_actions = {}
+
+
+local _close = function(prompt_bufnr, keepinsert)
+  local picker = action_state.get_current_picker(prompt_bufnr)
+  local prompt_win = state.get_status(prompt_bufnr).prompt_win
+  local original_win_id = picker.original_win_id
+
+  if picker.previewer then
+    picker.previewer:teardown()
+  end
+
+  actions.close_pum(prompt_bufnr)
+  if not keepinsert then
+    vim.cmd [[stopinsert]]
+  end
+
+  vim.api.nvim_win_close(prompt_win, true)
+
+  pcall(vim.cmd, string.format([[silent bdelete! %s]], prompt_bufnr))
+  pcall(vim.api.nvim_set_current_win, original_win_id)
+end
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
@@ -65,13 +88,16 @@ end
 
 project_actions.find_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
+  _close(prompt_bufnr, true)
   builtin.find_files({cwd = dir})
   vim.fn.execute("cd " .. dir, "silent")
 end
 
 project_actions.search_in_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
+  _close(prompt_bufnr, true)
   builtin.live_grep({cwd = dir})
+  vim.fn.execute("cd " .. dir, "silent")
 end
 
 project_actions.change_working_directory = function(prompt_bufnr)
