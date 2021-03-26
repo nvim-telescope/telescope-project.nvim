@@ -44,3 +44,4 @@ f: find a file within your project (this works the same as \<CR\>)
 
 ## Roadmap :blue_car:
 - workspaces :construction:
+- add all (git-enabled) subdirectories, instead of manually needing to add all projects :construction:
