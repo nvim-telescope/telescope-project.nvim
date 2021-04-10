@@ -6,14 +6,18 @@ local project_actions = {}
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
+function string.starts(String,Start)
+   return string.sub(String,1,string.len(Start))==Start
+end
+
 project_actions.add_project = function(prompt_bufnr)
   local git_root = vim.fn.systemlist("git -C " .. vim.loop.cwd() .. " rev-parse --show-toplevel")[
     1
   ]
+
   local project_directory = git_root
-  if not git_root then
+  if not git_root or string.starts(git_root,'fatal') then
     project_directory = vim.loop.cwd()
-    return
   end
 
   local project_title = project_directory:match("[^/]+$")
