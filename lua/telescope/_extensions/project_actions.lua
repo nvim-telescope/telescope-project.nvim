@@ -70,13 +70,14 @@ end
 project_actions.find_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   actions._close(prompt_bufnr, true)
-  builtin.find_files({cwd = dir})
   vim.fn.execute("cd " .. dir, "silent")
+  builtin.find_files({cwd = dir})
 end
 
 project_actions.search_in_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   actions._close(prompt_bufnr, true)
+  vim.fn.execute("cd " .. dir, "silent")
   builtin.live_grep({cwd = dir})
 end
 
