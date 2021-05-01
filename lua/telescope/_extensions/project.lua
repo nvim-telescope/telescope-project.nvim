@@ -13,8 +13,6 @@ local project_actions = require("telescope._extensions.project_actions")
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
-require('telescope').setup {}
-
 local function check_for_project_dirs_file()
   local f = io.open(project_dirs_file, "r")
   if f ~= nil then
