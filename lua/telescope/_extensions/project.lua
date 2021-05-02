@@ -19,7 +19,6 @@ local function check_for_project_dirs_file()
     io.close(f)
     return true
   else
-    print('Starting telescope-project')
     local newFile = io.open(project_dirs_file, "w")
     newFile:write()
     newFile:close()
@@ -49,7 +48,7 @@ local select_project = function(opts, projects)
       map('n', 's', project_actions.search_in_project_files)
       map('n', 'w', project_actions.change_working_directory)
       local on_project_selected = function()
-        project_actions.find_project_files(prompt_bufnr, opts.change_dir)
+        project_actions.find_project_files(prompt_bufnr)
       end
       actions.select_default:replace(on_project_selected)
       return true
