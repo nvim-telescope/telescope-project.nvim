@@ -1,6 +1,7 @@
 # telescope-project.nvim
 
-An extension for [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) that allows you to switch projects.
+An extension for [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) 
+that allows you to switch between projects.
 
 ## Demo
 
@@ -36,14 +37,27 @@ vim.api.nvim_set_keymap(
 ```
 
 ## Default mappings (normal mode):
-d: delete currently selected project\
-r: rename currently selected project\
-c: create a project (defaults to your git root if used inside a git project, otherwise will use your current working directory)\
-s: search inside files within your project\
-w: change to the selected project's directory without opening it\
+
+d: delete currently selected project  
+r: rename currently selected project  
+c: create a project (defaults to your git root if used inside a git project, 
+otherwise it will use your current working directory)  
+s: search inside files within your project  
+w: change to the selected project's directory without opening it  
 f: find a file within your project (this works the same as \<CR\>)
 
+## Available options:
+
+Options can be added when requiring telescope project, as shown below:  
+```lua require'telescope'.extensions.project.project{ display_type = 'full' }```
+
+display_type:  
+
+- 'full' (Show the title and the path of the project)  
+-	'minimal' (Default. Show the title of the project only)  
+
 ## Roadmap :blue_car:
+
 - order projects by last opened :construction:
 - workspaces :construction:
-- add all (git-enabled) subdirectories, instead of manually needing to add all projects :construction:
+- add all (git-enabled) subdirectories automatically :construction:

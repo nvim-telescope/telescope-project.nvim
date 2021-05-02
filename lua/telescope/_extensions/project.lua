@@ -19,14 +19,23 @@ local function check_for_project_dirs_file()
     io.close(f)
     return true
   else
-    print('Starting telescope-project')
     local newFile = io.open(project_dirs_file, "w")
     newFile:write()
     newFile:close()
   end
 end
 
+local show_display = function(display_type, entry)
+  print(display_type)
+  if display_type == 'full' then
+    return entry.title .. '     [' .. entry.path .. ']'
+  else
+    return entry.title
+  end
+end
+
 local select_project = function(opts, projects)
+  local display_type = opts.display_type
   pickers.new(opts, {
     prompt_title = 'Select a project',
     results_title = 'Projects',
@@ -35,7 +44,7 @@ local select_project = function(opts, projects)
       entry_maker = function(entry)
         return {
           value = entry.path,
-          display = entry.title,
+          display = show_display(display_type, entry),
           ordinal = entry.title,
         }
       end,
@@ -49,7 +58,7 @@ local select_project = function(opts, projects)
       map('n', 's', project_actions.search_in_project_files)
       map('n', 'w', project_actions.change_working_directory)
       local on_project_selected = function()
-        project_actions.find_project_files(prompt_bufnr, opts.change_dir)
+        project_actions.find_project_files(prompt_bufnr)
       end
       actions.select_default:replace(on_project_selected)
       return true
