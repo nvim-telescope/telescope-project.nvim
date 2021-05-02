@@ -26,7 +26,6 @@ local function check_for_project_dirs_file()
 end
 
 local show_display = function(display_type, entry)
-  print(display_type)
   if display_type == 'full' then
     return entry.title .. '     [' .. entry.path .. ']'
   else
