@@ -48,6 +48,29 @@ project_actions.add_project = function(prompt_bufnr)
   require 'telescope'.extensions.project.project()
 end
 
+project_actions.rename_project = function(prompt_bufnr)
+	local oldName = actions.get_selected_entry(prompt_bufnr).display
+  local newName = vim.fn.input('Rename ' ..oldName.. ' to: ', oldName)
+	local newLines = ""
+  for line in io.lines(project_dirs_file) do
+    local title, path = line:match("^(.-)=(.-)$")
+    if title ~= oldName then
+      newLines = newLines .. title .. '=' .. path .. '\n'
+		else
+			newLines = newLines .. newName .. '=' .. actions.get_selected_entry(prompt_bufnr).value .. '\n'
+    end
+  end
+  local file = assert(
+    io.open(project_dirs_file, "w"),
+    "No project file exists"
+  )
+  file:write(newLines)
+  file:close()
+  print('Project renamed: ' .. actions.get_selected_entry(prompt_bufnr).display .. ' -> ' .. newName)
+  actions.close(prompt_bufnr)
+  require 'telescope'.extensions.project.project()
+end
+
 project_actions.delete_project = function(prompt_bufnr)
   local newLines = ""
   for line in io.lines(project_dirs_file) do
