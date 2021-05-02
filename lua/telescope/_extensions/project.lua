@@ -43,6 +43,7 @@ local select_project = function(opts, projects)
     sorter = conf.file_sorter(opts),
     attach_mappings = function(prompt_bufnr, map)
       map('n', 'd', project_actions.delete_project)
+      map('n', 'r', project_actions.rename_project)
       map('n', 'c', project_actions.add_project)
       map('n', 'f', project_actions.find_project_files)
       map('n', 's', project_actions.search_in_project_files)
