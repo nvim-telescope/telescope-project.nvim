@@ -27,6 +27,7 @@ local function check_for_project_dirs_file()
 end
 
 local select_project = function(opts, projects)
+
   pickers.new(opts, {
     prompt_title = 'Select a project',
     results_title = 'Projects',
@@ -63,14 +64,19 @@ local project = function(opts)
   check_for_project_dirs_file()
   local projects = {}
 
-  -- format for projects is title of project=~/this/path/name
   for line in io.lines(project_dirs_file) do
     local title, path = line:match("^(.-)=(.-)$")
+    local last_accessed = vim.loop.fs_stat(path).atime.sec
     table.insert(projects, {
       title = title,
       path = path,
+      last_accessed = last_accessed
     })
   end
+
+  table.sort(projects, function(a,b) 
+    return a.last_accessed > b.last_accessed
+  end)
 
   select_project(opts, projects)
 end
