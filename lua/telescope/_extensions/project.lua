@@ -35,7 +35,7 @@ local select_project = function(opts, projects)
       entry_maker = function(entry)
         return {
           value = entry.path,
-          display = entry.title,
+          display = entry.title .. '    [' .. entry.path .. ']',
           ordinal = entry.title,
         }
       end,

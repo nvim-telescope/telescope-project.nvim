@@ -49,7 +49,7 @@ project_actions.add_project = function(prompt_bufnr)
 end
 
 project_actions.rename_project = function(prompt_bufnr)
-  local oldName = actions.get_selected_entry(prompt_bufnr).display
+  local oldName = actions.get_selected_entry(prompt_bufnr).ordinal
   local newName = vim.fn.input('Rename ' ..oldName.. ' to: ', oldName)
   local newLines = ""
   for line in io.lines(project_dirs_file) do
@@ -66,7 +66,7 @@ project_actions.rename_project = function(prompt_bufnr)
   )
   file:write(newLines)
   file:close()
-  print('Project renamed: ' .. actions.get_selected_entry(prompt_bufnr).display .. ' -> ' .. newName)
+  print('Project renamed: ' .. actions.get_selected_entry(prompt_bufnr).ordinal .. ' -> ' .. newName)
   actions.close(prompt_bufnr)
   require 'telescope'.extensions.project.project()
 end
@@ -75,7 +75,7 @@ project_actions.delete_project = function(prompt_bufnr)
   local newLines = ""
   for line in io.lines(project_dirs_file) do
     local title, path = line:match("^(.-)=(.-)$")
-    if title ~= actions.get_selected_entry(prompt_bufnr).display then
+    if title ~= actions.get_selected_entry(prompt_bufnr).ordinal then
       newLines = newLines .. title .. '=' .. path .. "\n"
     end
   end
@@ -85,7 +85,7 @@ project_actions.delete_project = function(prompt_bufnr)
   )
   file:write(newLines)
   file:close()
-  print('Project deleted: ' .. actions.get_selected_entry(prompt_bufnr).display)
+  print('Project deleted: ' .. actions.get_selected_entry(prompt_bufnr).ordinal)
   actions.close(prompt_bufnr)
   require 'telescope'.extensions.project.project()
 end
