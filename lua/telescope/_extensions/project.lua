@@ -27,7 +27,6 @@ local function check_for_project_dirs_file()
 end
 
 local select_project = function(opts, projects)
-
   pickers.new(opts, {
     prompt_title = 'Select a project',
     results_title = 'Projects',
