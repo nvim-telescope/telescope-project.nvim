@@ -25,7 +25,17 @@ local function check_for_project_dirs_file()
   end
 end
 
+local show_display = function(display_type, entry)
+  print(display_type)
+  if display_type == 'full' then
+    return entry.title .. '     [' .. entry.path .. ']'
+  else
+    return entry.title
+  end
+end
+
 local select_project = function(opts, projects)
+  local display_type = opts.display_type
   pickers.new(opts, {
     prompt_title = 'Select a project',
     results_title = 'Projects',
@@ -34,7 +44,7 @@ local select_project = function(opts, projects)
       entry_maker = function(entry)
         return {
           value = entry.path,
-          display = entry.title .. '    [' .. entry.path .. ']',
+          display = show_display(display_type, entry),
           ordinal = entry.title,
         }
       end,
