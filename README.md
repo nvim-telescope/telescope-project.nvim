@@ -43,7 +43,9 @@ r: rename currently selected project
 c: create a project (defaults to your git root if used inside a git project, 
 otherwise it will use your current working directory)  
 s: search inside files within your project  
+b: browse inside files within your project  
 w: change to the selected project's directory without opening it  
+r: find a recently opened file within your project  
 f: find a file within your project (this works the same as \<CR\>)
 
 ## Available options:

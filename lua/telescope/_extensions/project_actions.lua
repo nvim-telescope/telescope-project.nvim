@@ -97,11 +97,25 @@ project_actions.find_project_files = function(prompt_bufnr)
   builtin.find_files({cwd = dir})
 end
 
+project_actions.browse_project_files = function(prompt_bufnr)
+  local dir = actions.get_selected_entry(prompt_bufnr).value
+  actions._close(prompt_bufnr, true)
+  vim.fn.execute("cd " .. dir, "silent")
+  builtin.file_browser({cwd = dir})
+end
+
 project_actions.search_in_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   actions._close(prompt_bufnr, true)
   vim.fn.execute("cd " .. dir, "silent")
   builtin.live_grep({cwd = dir})
+end
+
+project_actions.recent_project_files = function(prompt_bufnr)
+  local dir = actions.get_selected_entry(prompt_bufnr).value
+  actions._close(prompt_bufnr, true)
+  vim.fn.execute("cd " .. dir, "silent")
+  builtin.oldfiles({cwd_only = true})
 end
 
 project_actions.change_working_directory = function(prompt_bufnr)
