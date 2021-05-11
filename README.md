@@ -60,6 +60,6 @@ display_type:
 
 ## Roadmap :blue_car:
 
-- order projects by last opened :construction:
+- order projects by last opened :star:
 - workspaces :construction:
 - add all (git-enabled) subdirectories automatically :construction:
