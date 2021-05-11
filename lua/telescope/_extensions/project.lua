@@ -92,20 +92,35 @@ local select_project = function(opts, projects)
   }):find()
 end
 
+local get_last_accessed_time = function(path)
+  local expanded_path = vim.fn.expand(path)
+  local fs_stat = vim.loop.fs_stat(expanded_path)
+  if fs_stat then 
+    return fs_stat.atime.sec 
+  else 
+    return 0
+  end
+end
+
 local project = function(opts)
   opts = opts or {}
 
   check_for_project_dirs_file()
   local projects = {}
 
-  -- format for projects is title of project=~/this/path/name
   for line in io.lines(project_dirs_file) do
     local title, path = line:match("^(.-)=(.-)$")
+    local last_accessed = get_last_accessed_time(path)
     table.insert(projects, {
       title = title,
       path = path,
+      last_accessed = last_accessed
     })
   end
+
+  table.sort(projects, function(a,b) 
+    return a.last_accessed > b.last_accessed
+  end)
 
   select_project(opts, projects)
 end
