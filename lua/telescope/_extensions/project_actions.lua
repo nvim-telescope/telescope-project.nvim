@@ -44,8 +44,6 @@ project_actions.add_project = function(prompt_bufnr)
     print('project added: ' .. project_title)
   end
   io.close(file)
-  actions.close(prompt_bufnr)
-  require 'telescope'.extensions.project.project()
 end
 
 project_actions.rename_project = function(prompt_bufnr)
@@ -67,8 +65,6 @@ project_actions.rename_project = function(prompt_bufnr)
   file:write(newLines)
   file:close()
   print('Project renamed: ' .. actions.get_selected_entry(prompt_bufnr).ordinal .. ' -> ' .. newName)
-  actions.close(prompt_bufnr)
-  require 'telescope'.extensions.project.project()
 end
 
 project_actions.delete_project = function(prompt_bufnr)
@@ -86,8 +82,6 @@ project_actions.delete_project = function(prompt_bufnr)
   file:write(newLines)
   file:close()
   print('Project deleted: ' .. actions.get_selected_entry(prompt_bufnr).ordinal)
-  actions.close(prompt_bufnr)
-  require 'telescope'.extensions.project.project()
 end
 
 project_actions.find_project_files = function(prompt_bufnr)
