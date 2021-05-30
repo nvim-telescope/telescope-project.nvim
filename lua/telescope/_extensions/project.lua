@@ -16,6 +16,9 @@ local project_actions = require("telescope._extensions.project_actions")
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
+-- Checks if the file containing the list of project
+-- directories already exists.
+-- If it doesn't exist, it creates it.
 local function check_for_project_dirs_file()
   local f = io.open(project_dirs_file, "r")
   if f ~= nil then
@@ -28,6 +31,8 @@ local function check_for_project_dirs_file()
   end
 end
 
+-- Creates a Telescope `finder` based on the given options
+-- and list of projects
 local create_finder = function(opts, projects)
   local display_type = opts.display_type
   local widths = {
@@ -73,32 +78,6 @@ local create_finder = function(opts, projects)
     }
 end
 
--- local select_project = function(opts, projects)
---   local new_finder = project_finder(opts, projects)
-
---   pickers.new(opts, {
---     prompt_title = 'Select a project',
---     results_title = 'Projects',
---     finder = new_finder,
---     sorter = conf.file_sorter(opts),
---     attach_mappings = function(prompt_bufnr, map)
---       map('n', 'd', project_actions.delete_project)
---       map('n', 'r', project_actions.rename_project)
---       map('n', 'c', project_actions.add_project)
---       map('n', 'f', project_actions.find_project_files)
---       map('n', 'b', project_actions.browse_project_files)
---       map('n', 's', project_actions.search_in_project_files)
---       map('n', 'R', project_actions.recent_project_files)
---       map('n', 'w', project_actions.change_working_directory)
---       local on_project_selected = function()
---         project_actions.find_project_files(prompt_bufnr)
---       end
---       actions.select_default:replace(on_project_selected)
---       return true
---     end
---   }):find()
--- end
-
 local get_last_accessed_time = function(path)
   local expanded_path = vim.fn.expand(path)
   local fs_stat = vim.loop.fs_stat(expanded_path)
@@ -109,6 +88,8 @@ local get_last_accessed_time = function(path)
   end
 end
 
+-- Get information on all of the projects in the
+-- `project_dirs_file` and output it as a list
 local get_projects = function()
   check_for_project_dirs_file()
   local projects = {}
@@ -130,6 +111,10 @@ local get_projects = function()
   return projects
 end
 
+-- The main function.
+-- This creates a picker with a list of all of the projects,
+-- and attaches the appropriate mappings for associated
+-- actions.
 local project = function(opts)
   opts = opts or {}
 
@@ -143,7 +128,6 @@ local project = function(opts)
     sorter = conf.file_sorter(opts),
     attach_mappings = function(prompt_bufnr, map)
       local refresh_projects = function()
-        -- dump(action_state)
         local picker = action_state.get_current_picker(prompt_bufnr)
         picker:refresh(create_finder(opts,get_projects()), {reset_prompt=true})
       end

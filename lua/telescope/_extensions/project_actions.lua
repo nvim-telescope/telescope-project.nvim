@@ -10,6 +10,7 @@ function string.starts(String,Start)
    return string.sub(String,1,string.len(Start))==Start
 end
 
+-- Create a new project and add it to the list in the `project_dirs_file`
 project_actions.add_project = function(prompt_bufnr)
   local git_root = vim.fn.systemlist("git -C " .. vim.loop.cwd() .. " rev-parse --show-toplevel")[
     1
@@ -46,6 +47,8 @@ project_actions.add_project = function(prompt_bufnr)
   io.close(file)
 end
 
+-- Rename the selected project within the `project_dirs_file`.
+-- Uses a name provided by the user.
 project_actions.rename_project = function(prompt_bufnr)
   local oldName = actions.get_selected_entry(prompt_bufnr).ordinal
   local newName = vim.fn.input('Rename ' ..oldName.. ' to: ', oldName)
@@ -67,6 +70,7 @@ project_actions.rename_project = function(prompt_bufnr)
   print('Project renamed: ' .. actions.get_selected_entry(prompt_bufnr).ordinal .. ' -> ' .. newName)
 end
 
+-- Delete the selected project from the `project_dirs_file`
 project_actions.delete_project = function(prompt_bufnr)
   local newLines = ""
   for line in io.lines(project_dirs_file) do
@@ -84,6 +88,8 @@ project_actions.delete_project = function(prompt_bufnr)
   print('Project deleted: ' .. actions.get_selected_entry(prompt_bufnr).ordinal)
 end
 
+-- Find files within the selected project using the
+-- Telescope builtin `find_files`.
 project_actions.find_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   actions._close(prompt_bufnr, true)
@@ -91,6 +97,8 @@ project_actions.find_project_files = function(prompt_bufnr)
   builtin.find_files({cwd = dir})
 end
 
+-- Browse through files within the selected project using
+-- the Telescope builtin `file_browser`.
 project_actions.browse_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   actions._close(prompt_bufnr, true)
@@ -98,6 +106,8 @@ project_actions.browse_project_files = function(prompt_bufnr)
   builtin.file_browser({cwd = dir})
 end
 
+-- Search within files in the selected project using
+-- the Telescope builtin `live_grep`.
 project_actions.search_in_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   actions._close(prompt_bufnr, true)
@@ -105,6 +115,8 @@ project_actions.search_in_project_files = function(prompt_bufnr)
   builtin.live_grep({cwd = dir})
 end
 
+-- Search the recently used files within the selected project
+-- using the Telescope builtin `oldfiles`.
 project_actions.recent_project_files = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   actions._close(prompt_bufnr, true)
@@ -112,6 +124,7 @@ project_actions.recent_project_files = function(prompt_bufnr)
   builtin.oldfiles({cwd_only = true})
 end
 
+-- Change working directory to the selected project and close the picker.
 project_actions.change_working_directory = function(prompt_bufnr)
   local dir = actions.get_selected_entry(prompt_bufnr).value
   actions.close(prompt_bufnr)
