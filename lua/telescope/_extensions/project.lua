@@ -5,6 +5,7 @@ if not has_telescope then
 end
 
 local actions = require("telescope.actions")
+local action_state = require("telescope.actions.state")
 local finders = require("telescope.finders")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
@@ -15,6 +16,9 @@ local project_actions = require("telescope._extensions.project_actions")
 
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
+-- Checks if the file containing the list of project
+-- directories already exists.
+-- If it doesn't exist, it creates it.
 local function check_for_project_dirs_file()
   local f = io.open(project_dirs_file, "r")
   if f ~= nil then
@@ -27,7 +31,9 @@ local function check_for_project_dirs_file()
   end
 end
 
-local select_project = function(opts, projects)
+-- Creates a Telescope `finder` based on the given options
+-- and list of projects
+local create_finder = function(opts, projects)
   local display_type = opts.display_type
   local widths = {
     title = 0,
@@ -61,10 +67,7 @@ local select_project = function(opts, projects)
     }
   end
 
-  pickers.new(opts, {
-    prompt_title = 'Select a project',
-    results_title = 'Projects',
-    finder = finders.new_table {
+  return finders.new_table {
       results = projects,
       entry_maker = function(entry)
         entry.value = entry.path
@@ -72,9 +75,66 @@ local select_project = function(opts, projects)
         entry.display = make_display
         return entry
       end,
-    },
+    }
+end
+
+local get_last_accessed_time = function(path)
+  local expanded_path = vim.fn.expand(path)
+  local fs_stat = vim.loop.fs_stat(expanded_path)
+  if fs_stat then
+    return fs_stat.atime.sec
+  else
+    return 0
+  end
+end
+
+-- Get information on all of the projects in the
+-- `project_dirs_file` and output it as a list
+local get_projects = function()
+  check_for_project_dirs_file()
+  local projects = {}
+
+  for line in io.lines(project_dirs_file) do
+    local title, path = line:match("^(.-)=(.-)$")
+    local last_accessed = get_last_accessed_time(path)
+    table.insert(projects, {
+      title = title,
+      path = path,
+      last_accessed = last_accessed
+    })
+  end
+
+  table.sort(projects, function(a,b)
+    return a.last_accessed > b.last_accessed
+  end)
+
+  return projects
+end
+
+-- The main function.
+-- This creates a picker with a list of all of the projects,
+-- and attaches the appropriate mappings for associated
+-- actions.
+local project = function(opts)
+  opts = opts or {}
+
+  local projects = get_projects()
+  local new_finder = create_finder(opts, projects)
+
+  pickers.new(opts, {
+    prompt_title = 'Select a project',
+    results_title = 'Projects',
+    finder = new_finder,
     sorter = conf.file_sorter(opts),
     attach_mappings = function(prompt_bufnr, map)
+      local refresh_projects = function()
+        local picker = action_state.get_current_picker(prompt_bufnr)
+        picker:refresh(create_finder(opts,get_projects()), {reset_prompt=true})
+      end
+      project_actions.add_project:enhance({ post = refresh_projects })
+      project_actions.delete_project:enhance({ post = refresh_projects })
+      project_actions.rename_project:enhance({ post = refresh_projects })
+
       map('n', 'd', project_actions.delete_project)
       map('n', 'r', project_actions.rename_project)
       map('n', 'c', project_actions.add_project)
@@ -90,39 +150,6 @@ local select_project = function(opts, projects)
       return true
     end
   }):find()
-end
-
-local get_last_accessed_time = function(path)
-  local expanded_path = vim.fn.expand(path)
-  local fs_stat = vim.loop.fs_stat(expanded_path)
-  if fs_stat then 
-    return fs_stat.atime.sec 
-  else 
-    return 0
-  end
-end
-
-local project = function(opts)
-  opts = opts or {}
-
-  check_for_project_dirs_file()
-  local projects = {}
-
-  for line in io.lines(project_dirs_file) do
-    local title, path = line:match("^(.-)=(.-)$")
-    local last_accessed = get_last_accessed_time(path)
-    table.insert(projects, {
-      title = title,
-      path = path,
-      last_accessed = last_accessed
-    })
-  end
-
-  table.sort(projects, function(a,b) 
-    return a.last_accessed > b.last_accessed
-  end)
-
-  select_project(opts, projects)
 end
 
 return telescope.register_extension {exports = {project = project}}
