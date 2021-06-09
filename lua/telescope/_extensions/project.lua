@@ -20,43 +20,41 @@ local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 -- Recurses directories under base directory to
 -- find all git repository paths
 local function find_git_projects(base_dir)
-	local shell_cmd = "find " .. base_dir .. " -type d -name .git -printf '%h\n'"
-	local tmp_path = "/tmp/found_projects.txt"
-	os.execute(shell_cmd .. " > " .. tmp_path)
+  local shell_cmd = "find " .. base_dir .. " -type d -name .git -printf '%h\n'"
+  local tmp_path = "/tmp/found_projects.txt"
+  os.execute(shell_cmd .. " > " .. tmp_path)
 
-	local projects = {}
+  local projects = {}
+  for project_path in io.lines(tmp_path, "r") do
+    local title = project_path:match("[^/]+$")
+    local project = title .. "=" .. project_path .. "\n"
+    table.insert(projects, project)
+  end
 
-	for project_path in io.lines(tmp_path, "r") do
-		local title = project:match("[^/]+$")
-		local project = title .. "=" .. project_path .. "\n"
-		table.insert(projects, project)
-	end
-
-	return projects
+  return projects
 end
 
 -- Initializes either blank project file or if
 -- base_dir option is given it will recurse base
 -- directory and add all .git repositories
 local function initialize_project_file(opts)
-	local base_dir = opts.base_dir
-	local projects = find_git_projects(base_dir) and base_dir or {}
+  local base_dir = opts.base_dir
+  local projects = find_git_projects(base_dir) and base_dir or {}
 
-	local newFile = io.open(project_dirs_file, "w")
-	for project in projects do
-		newFile:write(project)
-	end
-	newFile:close()
+  local newFile = io.open(project_dirs_file, "w")
+  for project in projects do
+    newFile:write(project)
+  end
+  newFile:close()
 end
 
 -- Checks if the file containing the list of project
 -- directories already exists.
 local function project_file_missing()
   local f = io.open(project_dirs_file, "r")
-  if f ~= nil then
-    io.close(f)
-    return true
-	return false
+  local f_missing = f == nil
+  io.close(f)
+  return f_missing
 end
 
 -- Creates a Telescope `finder` based on the given options
@@ -120,9 +118,9 @@ end
 -- `project_dirs_file` and output it as a list
 local get_projects = function(opts)
 
-	if project_file_missing() then
-		initialize_project_file(opts)
-	end
+  if project_file_missing() then
+    initialize_project_file(opts)
+  end
 
   local projects = {}
 
