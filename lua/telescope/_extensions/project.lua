@@ -24,8 +24,7 @@ local function find_git_projects(base_dir)
   os.execute(shell_cmd .. " > " .. tmp_path)
 
   local projects = {}
-  for line in io.lines(tmp_path, "r") do
-    local path = line
+  for path in io.lines(tmp_path) do
     local title = path:match("[^/]+$")
     local project = title .. "=" .. path .. "\n"
     table.insert(projects, project)
@@ -36,9 +35,8 @@ end
 -- Write out directories found under base directory to file
 local function write_base_dir_projects(projects)
   local outFile = io.open(project_dirs_file, "a")
-  for project in projects do
-    io.output(outFile)
-    io.write(project)
+  for _, project in pairs(projects) do
+    outFile:write(project)
   end
 end
 
@@ -118,8 +116,8 @@ local get_projects = function(opts)
 
   initialize_project_file()
   local base_dir = opts.base_dir
-  local base_dir_projects = find_git_projects(base_dir) and base_dir or {}
-  write_base_dir_projects(base_dir_projects)
+  local git_projects = base_dir and find_git_projects(base_dir) or {}
+  write_base_dir_projects(git_projects)
 
   local projects = {}
 
