@@ -23,14 +23,23 @@ local function find_git_projects(base_dir)
   local tmp_path = "/tmp/found_projects.txt"
   os.execute(shell_cmd .. " > " .. tmp_path)
 
-  local projectFile = io.open(project_dirs_file, "w")
+  local projects = {}
   for line in io.lines(tmp_path, "r") do
     local path = line
     local title = path:match("[^/]+$")
     local project = title .. "=" .. path .. "\n"
-    projectFile:write(project)
+    table.insert(projects, project)
   end
-  projectFile:close()
+  return projects
+end
+
+-- Write out directories found under base directory to file
+local function write_base_dir_projects(projects)
+  local outFile = io.open(project_dirs_file, "a")
+  for project in projects do
+    io.output(outFile)
+    io.write(project)
+  end
 end
 
 -- Initializes blank project file if does not exist
@@ -44,16 +53,6 @@ local function initialize_project_file()
     newFile:write()
     newFile:close()
   end
-end
-
-
--- Checks if the file containing the list of project
--- directories already exists and returns boolean.
-local function check_project_file_exists()
-  local file = io.open(project_dirs_file, "r")
-  local file_missing = file == nil
-  if not file_missing then io.close(file) end
-  return file_missing
 end
 
 -- Creates a Telescope `finder` based on the given options
@@ -119,7 +118,10 @@ local get_projects = function(opts)
 
   initialize_project_file()
   local base_dir = opts.base_dir
-  local projects = find_git_projects(base_dir) and base_dir or {}
+  local base_dir_projects = find_git_projects(base_dir) and base_dir or {}
+  write_base_dir_projects(base_dir_projects)
+
+  local projects = {}
 
   for line in io.lines(project_dirs_file) do
     local title, path = line:match("^(.-)=(.-)$")
