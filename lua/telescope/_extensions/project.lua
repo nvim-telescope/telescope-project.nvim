@@ -49,12 +49,12 @@ local function initialize_project_file(opts)
 end
 
 -- Checks if the file containing the list of project
--- directories already exists.
+-- directories already exists and returns boolean.
 local function project_file_missing()
-  local f = io.open(project_dirs_file, "r")
-  local f_missing = f == nil
-  io.close(f)
-  return f_missing
+  local file = io.open(project_dirs_file, "r")
+  local file_missing = file == nil
+  if not file_missing then io.close(file) end
+  return file_missing
 end
 
 -- Creates a Telescope `finder` based on the given options
