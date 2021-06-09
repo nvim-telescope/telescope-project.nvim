@@ -17,48 +17,35 @@ local project_actions = require("telescope._extensions.project_actions")
 local project_dirs_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
 
-local log = require('plenary.log').new {
-  plugin = 'telescope-projects',
-  level = 'debug',
-}
-
-
--- Recurses directories under base directory to
--- find all git repository paths
+-- Recurses directories under base directory to find all git repos
 local function find_git_projects(base_dir)
   local shell_cmd = "find " .. base_dir .. " -type d -name .git -printf '%h\n'"
   local tmp_path = "/tmp/found_projects.txt"
   os.execute(shell_cmd .. " > " .. tmp_path)
 
-  local projects = {}
-  for project_path in io.lines(tmp_path, "r") do
-    local title = project_path:match("[^/]+$")
-    local project = title .. "=" .. project_path .. "\n"
-    table.insert(projects, project)
+  local projectFile = io.open(project_dirs_file, "w")
+  for line in io.lines(tmp_path, "r") do
+    local path = line
+    local title = path:match("[^/]+$")
+    local project = title .. "=" .. path .. "\n"
+    projectFile:write(project)
   end
-
-  log.debug("find_git_project - projects: " .. projects)
-
-  return projects
+  projectFile:close()
 end
 
--- Initializes either blank project file or if
--- base_dir option is given it will recurse base
--- directory and add all .git repositories
-local function initialize_project_file(opts)
-  local base_dir = opts.base_dir or false
-  log.debug("initialize_project_file - base_dir: " .. base_dir)
-  local projects = find_git_projects(base_dir) and base_dir or {}
-  log.debug("initialize_project_file - projects: " .. projects)
-
-  local newFile = io.open(project_dirs_file, "w")
-  newFile:write()
-
-  for project in projects do
-    newFile:write(project)
+-- Initializes blank project file if does not exist
+local function initialize_project_file()
+  local f = io.open(project_dirs_file, "r")
+  if f ~= nil then
+    io.close(f)
+    return true
+  else
+    local newFile = io.open(project_dirs_file, "w")
+    newFile:write()
+    newFile:close()
   end
-  newFile:close()
 end
+
 
 -- Checks if the file containing the list of project
 -- directories already exists and returns boolean.
@@ -66,7 +53,6 @@ local function check_project_file_exists()
   local file = io.open(project_dirs_file, "r")
   local file_missing = file == nil
   if not file_missing then io.close(file) end
-  log.debug("file_missing: " .. file_missing)
   return file_missing
 end
 
@@ -131,12 +117,9 @@ end
 -- `project_dirs_file` and output it as a list
 local get_projects = function(opts)
 
-  if not check_project_file_exists() then
-    log.debug("DOES NOT EXIST")
-    initialize_project_file(opts)
-  end
-
-  local projects = {}
+  initialize_project_file()
+  local base_dir = opts.base_dir
+  local projects = find_git_projects(base_dir) and base_dir or {}
 
   for line in io.lines(project_dirs_file) do
     local title, path = line:match("^(.-)=(.-)$")
