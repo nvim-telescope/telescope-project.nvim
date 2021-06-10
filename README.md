@@ -45,21 +45,26 @@ otherwise it will use your current working directory)
 s: search inside files within your project  
 b: browse inside files within your project  
 w: change to the selected project's directory without opening it  
-r: find a recently opened file within your project  
+R: find a recently opened file within your project  
 f: find a file within your project (this works the same as \<CR\>)
 
 ## Available options:
 
+| Keys         | Description                                               | Options                       |
+|--------------|-----------------------------------------------------------|-------------------------------|
+| display_type | Show the title and the path of the project                | 'full' or 'minimal' (default) |
+| base_dir     | path to projects - all git repos underneath will be added | string                        |
+
 Options can be added when requiring telescope project, as shown below:  
-```lua require'telescope'.extensions.project.project{ display_type = 'full' }```
 
-display_type:  
-
-- 'full' (Show the title and the path of the project)  
--	'minimal' (Default. Show the title of the project only)  
+```lua
+lua require'telescope'.extensions.project.project{
+  display_type = 'full', base_dir = '~/projects'
+}
+```
 
 ## Roadmap :blue_car:
 
 - order projects by last opened :heavy_check_mark:
+- add all (git-enabled) subdirectories automatically when supplying `base_dir` option :heavy_check_mark:
 - workspaces :construction:
-- add all (git-enabled) subdirectories automatically :construction:
