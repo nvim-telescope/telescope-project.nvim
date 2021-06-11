@@ -2,7 +2,7 @@ local builtin = require("telescope.builtin")
 local actions = require("telescope.actions")
 local transform_mod = require('telescope.actions.mt').transform_mod
 
-local _utils = require("telescope._extensions.utils")
+local _utils = require("telescope._extensions.project.utils")
 
 local M = {}
 

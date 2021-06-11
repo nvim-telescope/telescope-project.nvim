@@ -53,18 +53,33 @@ f: find a file within your project (this works the same as \<CR\>)
 | Keys         | Description                                               | Options                       |
 |--------------|-----------------------------------------------------------|-------------------------------|
 | display_type | Show the title and the path of the project                | 'full' or 'minimal' (default) |
-| base_dir     | path to projects - all git repos underneath will be added | string                        |
 
-Options can be added when requiring telescope project, as shown below:  
+Options can be added when requiring telescope-project, as shown below:  
 
 ```lua
-lua require'telescope'.extensions.project.project{
-  display_type = 'full', base_dir = '~/projects'
+lua require'telescope'.extensions.project.project{ display_type = 'full' }
+```
+
+## Available setup settings:
+
+| Keys         | Description                                    | Options |
+|--------------|------------------------------------------------|---------|
+| base_dir     | path to projects (all git repos will be added) | string  |
+
+Setup settings can be added when requiring telescope, as shown below:  
+
+```lua
+require('telescope').setup {
+  extensions = {
+    project = {
+      base_dir = '~/projects'
+    }
+  }
 }
 ```
 
 ## Roadmap :blue_car:
 
 - order projects by last opened :heavy_check_mark:
-- add all (git-enabled) subdirectories automatically when supplying `base_dir` option :heavy_check_mark:
+- add all (git-enabled) subdirectories automatically :heavy_check_mark:
 - workspaces :construction:

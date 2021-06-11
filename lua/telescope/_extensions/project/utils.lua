@@ -8,6 +8,15 @@ M.file_exists = function(path)
    local file = io.open(path, "r") if file ~= nil then io.close(file) return true else return false end
 end
 
+-- Initialize file if does not exist
+M.init_file = function()
+  if not M.file_exists(M.telescope_projects_file) then
+    local newFile = io.open(M.telescope_projects_file, "w")
+    newFile:write()
+    newFile:close()
+  end
+end
+
 -- Trim whitespace for strings
 M.trim = function(s)
   return s:match( "^%s*(.-)%s*$" )
@@ -16,7 +25,9 @@ end
 -- Check if value exists in table
 M.has_value = function(tbl, val)
   for _, value in ipairs(tbl) do
-    if value == val then return true end
+    if value == val
+      then return true
+    end
   end
   return false
 end
@@ -50,15 +61,6 @@ M.get_projects = function()
   end)
 
   return projects
-end
-
--- Extract paths from telescope project objects
-M.get_project_paths = function()
-  local project_paths = {}
-  for _, project in pairs(M.get_projects()) do
-    table.insert(project_paths, project.path)
-  end
-  return project_paths
 end
 
 -- Read tmpfile, converting paths to proper format
@@ -97,8 +99,7 @@ M.save_git_repos = function(git_projects)
 end
 
 -- Initialize project, finding git repos if base_dir provided
-M.update_git_repos = function(opts)
-  local base_dir = opts.base_dir
+M.update_git_repos = function(base_dir)
   local git_projects = base_dir and M.find_git_projects(base_dir) or {}
   M.save_git_repos(git_projects)
 end
