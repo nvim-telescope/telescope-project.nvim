@@ -15,14 +15,14 @@ M.project_finder = function(opts, projects)
 
   -- Loop over all of the projects and find the maximum length of
   -- each of the keys
-  for _,entry in pairs(projects) do
+  for _, project in pairs(projects) do
     if display_type == 'full' then
-      entry.dir = '[' .. entry.path .. ']'
+      project.display_path = '[' .. project.path .. ']'
     else
-      entry.dir = ''
+      project.display_path = ''
     end
     for key, value in pairs(widths) do
-      widths[key] = math.max(value, utils.strdisplaywidth(entry[key] or ''))
+      widths[key] = math.max(value, utils.strdisplaywidth(project[key] or ''))
     end
   end
 
@@ -33,20 +33,20 @@ M.project_finder = function(opts, projects)
       { width = widths.dir },
     }
   }
-  local make_display = function(entry)
+  local make_display = function(project)
     return displayer {
-      { entry.title },
-      { entry.dir }
+      { project.title },
+      { project.display_path }
     }
   end
 
   return finders.new_table {
       results = projects,
-      entry_maker = function(entry)
-        entry.value = entry.path
-        entry.ordinal = entry.title
-        entry.display = make_display
-        return entry
+      entry_maker = function(project)
+        project.value = project.path
+        project.ordinal = project.title
+        project.display = make_display
+        return project
       end,
     }
 end

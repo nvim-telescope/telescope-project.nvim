@@ -4,17 +4,18 @@ local action_state = require("telescope.actions.state")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
 
--- project telescope modules
+-- telescope-project modules
 local _actions = require("telescope._extensions.project.actions")
 local _finders = require("telescope._extensions.project.finders")
+local _git = require("telescope._extensions.project.git")
 local _utils = require("telescope._extensions.project.utils")
 
 local M = {}
-local base_dir = ""
+local base_dir = nil
 
 -- Allow user to set base_dir in setup
 M.setup = function(ext_config)
-  base_dir = ext_config.base_dir or ""
+  base_dir = ext_config.base_dir or nil
 end
 
 -- This creates a picker with a list of all of the projects
@@ -28,10 +29,12 @@ M.project = function(opts)
 
       local refresh_projects = function()
         local picker = action_state.get_current_picker(prompt_bufnr)
-        picker:refresh(_finders.project_finder(opts, _utils.get_projects()), {reset_prompt=true})
+        local finder = _finders.project_finder(opts, _utils.get_projects())
+        picker:refresh(finder, { reset_prompt = true })
       end
 
-      _utils.update_git_repos(base_dir)
+      _git.update_git_repos(base_dir)
+
       _actions.add_project:enhance({ post = refresh_projects })
       _actions.delete_project:enhance({ post = refresh_projects })
       _actions.rename_project:enhance({ post = refresh_projects })

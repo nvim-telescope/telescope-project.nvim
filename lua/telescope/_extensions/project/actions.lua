@@ -2,90 +2,78 @@ local builtin = require("telescope.builtin")
 local actions = require("telescope.actions")
 local transform_mod = require('telescope.actions.mt').transform_mod
 
+local _git = require("telescope._extensions.project.git")
 local _utils = require("telescope._extensions.project.utils")
 
 local M = {}
 
-function string.starts(String,Start)
-   return string.sub(String,1,string.len(Start))==Start
+-- Extracts project title from current buffer selection
+M.get_selected_title = function(prompt_bufnr)
+  return actions.get_selected_entry(prompt_bufnr).ordinal
+end
+
+-- Extracts project path from current buffer selection
+M.get_selected_path = function(prompt_bufnr)
+  return actions.get_selected_entry(prompt_bufnr).value
 end
 
 -- Create a new project and add it to the list in the `telescope_projects_file`
-M.add_project = function(prompt_bufnr)
-  local git_root = vim.fn.systemlist("git -C " .. vim.loop.cwd() .. " rev-parse --show-toplevel")[
-    1
-  ]
+M.add_project = function()
+  local path = _git.try_and_find_git_path()
+  local projects = _utils.get_project_objects()
+  local path_not_in_projects = true
 
-  local project_directory = git_root
-  if not git_root or string.starts(git_root,'fatal') then
-    project_directory = vim.loop.cwd()
-  end
-
-  local project_title = project_directory:match("[^/]+$")
-  local project_to_add = project_title .. "=" .. project_directory .. "\n"
-
-  local file = assert(
-    io.open(_utils.telescope_projects_file, "a"),
-    "No project file exists"
-  )
-
-  local project_already_added = false
-  for line in io.lines(_utils.telescope_projects_file) do
-    local project_exists_check = line .. "\n" == project_to_add
-    if project_exists_check then
-      project_already_added = true
-      print('This project already exists.')
-      return
+  local file = io.open(_utils.telescope_projects_file, "w")
+  for _, project in pairs(projects) do
+    if project.path == path then
+      project.activated = 1
+      path_not_in_projects = false
     end
+    _utils.store_project(file, project)
   end
 
-  if not project_already_added then
-    io.output(file)
-    io.write(project_to_add)
-    print('project added: ' .. project_title)
+  if path_not_in_projects then
+    local new_project = _utils.get_project_from_path(path)
+    _utils.store_project(file, new_project)
   end
+
   io.close(file)
+  print('Project added: ' .. path)
 end
 
 -- Rename the selected project within the `telescope_projects_file`.
--- Uses a name provided by the user.
 M.rename_project = function(prompt_bufnr)
-  local oldName = actions.get_selected_entry(prompt_bufnr).ordinal
-  local newName = vim.fn.input('Rename ' ..oldName.. ' to: ', oldName)
-  local newLines = ""
-  for line in io.lines(_utils.telescope_projects_file) do
-    local title, path = line:match("^(.-)=(.-)$")
-    if title ~= oldName then
-      newLines = newLines .. title .. '=' .. path .. '\n'
-    else
-      newLines = newLines .. newName .. '=' .. actions.get_selected_entry(prompt_bufnr).value .. '\n'
+  local selected_title = M.get_selected_title(prompt_bufnr)
+  local new_title = vim.fn.input('Rename ' ..selected_title.. ' to: ', selected_title)
+  local projects = _utils.get_project_objects()
+
+  local file = io.open(_utils.telescope_projects_file, "w")
+  for _, project in pairs(projects) do
+    if project.title == selected_title then
+      project.title = new_title
     end
+    _utils.store_project(file, project)
   end
-  local file = assert(
-    io.open(_utils.telescope_projects_file, "w"),
-    "No project file exists"
-  )
-  file:write(newLines)
-  file:close()
-  print('Project renamed: ' .. actions.get_selected_entry(prompt_bufnr).ordinal .. ' -> ' .. newName)
+
+  io.close(file)
+  print('Project renamed: ' .. selected_title .. ' -> ' .. new_title)
 end
 
--- Delete the selected project from the `telescope_projects_file`
+-- Delete (deactivate) the selected project from the `telescope_projects_file`
 M.delete_project = function(prompt_bufnr)
-  local newLines = ""
-  for line in io.lines(_utils.telescope_projects_file) do
-    local title, path = line:match("^(.-)=(.-)$")
-    if title ~= actions.get_selected_entry(prompt_bufnr).ordinal then
-      newLines = newLines .. title .. '=' .. path .. "\n"
+  local projects = _utils.get_project_objects()
+  local selected_title = M.get_selected_title(prompt_bufnr)
+
+  local file = io.open(_utils.telescope_projects_file, "w")
+  for _, project in pairs(projects) do
+    if project.title == selected_title then
+      project.activated = 0
     end
+    _utils.store_project(file, project)
   end
-  local file = assert(
-    io.open(_utils.telescope_projects_file, "w"),
-    "No project file exists"
-  )
-  file:write(newLines)
-  file:close()
-  print('Project deleted: ' .. actions.get_selected_entry(prompt_bufnr).ordinal)
+
+  io.close(file)
+  print('Project deleted: ' .. selected_title)
 end
 
 -- Find files within the selected project using the
