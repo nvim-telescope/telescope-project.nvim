@@ -11,11 +11,15 @@ local _git = require("telescope._extensions.project.git")
 local _utils = require("telescope._extensions.project.utils")
 
 local M = {}
+
+-- Variables that setup can change
 local base_dir = nil
+local max_depth = nil
 
 -- Allow user to set base_dir in setup
-M.setup = function(ext_config)
-  base_dir = ext_config.base_dir or nil
+M.setup = function(setup_config)
+  base_dir = setup_config.base_dir or nil
+  max_depth = setup_config.max_depth or 3
 end
 
 -- This creates a picker with a list of all of the projects
@@ -33,7 +37,7 @@ M.project = function(opts)
         picker:refresh(finder, { reset_prompt = true })
       end
 
-      _git.update_git_repos(base_dir)
+      _git.update_git_repos(base_dir, max_depth)
 
       _actions.add_project:enhance({ post = refresh_projects })
       _actions.delete_project:enhance({ post = refresh_projects })

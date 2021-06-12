@@ -56,7 +56,6 @@ M.rename_project = function(prompt_bufnr)
   end
 
   io.close(file)
-  print('Project renamed: ' .. selected_title .. ' -> ' .. new_title)
 end
 
 -- Delete (deactivate) the selected project from the `telescope_projects_file`
