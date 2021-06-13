@@ -1,7 +1,7 @@
 .PHONY: lint tests
 
 lint:
-	luacheck ./lua/telescope/_extensions/project
+	luacheck ./lua/telescope
 
 tests:
-	nvim --headless -c "PlenaryBustedDirectory tests/project/ {minimal_init = 'tests/minimal_init.vim'}"
+	nvim --headless -c "PlenaryBustedDirectory lua/tests/ {minimal_init = 'lua/tests/minimal_init.vim'}"

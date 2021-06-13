@@ -1,5 +1,3 @@
-path = require("plenary.path")
-
 local M = {}
 
 -- The file path to telescope projects
@@ -7,9 +5,9 @@ M.telescope_projects_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
 -- Initialize file if does not exist
 M.init_file = function()
-  local telescope_projects_path = path:new(M.telescope_projects_file)
-  if not telescope_projects_path:exists() then
-    telescope_projects_path:touch()
+  local file_path = require'plenary'.path:new(M.telescope_projects_file)
+  if not file_path:exists() then
+    file_path:touch()
   end
 end
 
