@@ -4,13 +4,6 @@ describe("utils", function()
 
   local utils = require("telescope._extensions.project.utils")
 
-  local patch_projects_file = function()
-    local test_file = "/tmp/dummy_project_file.txt"
-    utils.telescope_projects_file = test_file
-    utils.init_file()
-    return path:new(test_file)
-  end
-
   describe("general", function()
 
     it("trim whitespace (left and right)", function()
@@ -37,32 +30,35 @@ describe("utils", function()
 
     it("create, save, and read from file", function()
 
-      local test_project_path = "/test/project"
-      local test_path = patch_projects_file()
+      -- initialize projects file where projects are stored
+      local test_projects_file = "/tmp/telescope-projects-test.txt"
+      utils.telescope_projects_file = test_projects_file
+      utils.init_file()
+      local test_projects_path = path:new(test_projects_file)
 
       -- extract project information from path
-      local project = utils.get_project_from_path(test_project_path)
-      assert.equal(project.path, test_project_path)
+      local example_project_path = "/projects/my_project"
+      local project = utils.get_project_from_path(example_project_path)
+      assert.equal(project.path, example_project_path)
+      assert.equal(project.title, "my_project")
+      assert.equal(project.activated, "1")
 
       -- store project in test file
-      local file = io.open(test_path.filename, "w")
+      local file = io.open(test_projects_path.filename, "w")
       utils.store_project(file, project)
       io.close(file)
 
-      -- retrieve projects from test file
-      local projects = utils.get_projects()
-
       -- check that test project was found
+      local projects = utils.get_projects()
       local found_test_project = false
       for _, stored_project in pairs(projects) do
-        if stored_project.path == test_project_path then
+        if stored_project.path == example_project_path then
           found_test_project = true
         end
       end
-      assert.equal(true, found_test_project)
 
-      -- cleanup
-      test_path:rm()
+      assert.equal(true, found_test_project)
+      test_projects_path:rm()
     end)
 
   end)

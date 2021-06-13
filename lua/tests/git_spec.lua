@@ -11,8 +11,7 @@ describe("git", function()
   it("try and find path", function()
     vim.fn.execute("cd " .. example_project_path.filename, "silent")
     local git_path = git.try_and_find_git_path()
-    local example_path = path_to_projects.filename .. "/example"
-    assert.equal(example_path, git_path)
+    assert.equal(example_project_path.filename, git_path)
   end)
 
   it("search for repos", function()
