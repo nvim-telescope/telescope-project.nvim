@@ -4,4 +4,4 @@ lint:
 	luacheck ./lua/telescope
 
 tests:
-	nvim --headless -c "PlenaryBustedDirectory lua/tests/ {minimal_init = 'lua/tests/minimal_init.vim'}"
+	nvim --headless -c "PlenaryBustedDirectory lua/tests/"
