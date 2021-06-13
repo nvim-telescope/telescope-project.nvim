@@ -23,14 +23,9 @@ describe("utils", function()
       assert.equal(false, utils.has_value(paths, "/projects/C"))
     end)
 
-    it("check that /tmp/dummy.txt file exists", function()
-      local dummy_file = "/tmp/dummy.txt"
-      local dummy_path = path:new(dummy_file)
+  end)
 
-      assert.equal(false, utils.file_exists(dummy_file))
-      dummy_path:touch()
-      assert.equal(true, utils.file_exists(dummy_file))
-    end)
+  describe("project", function()
 
   end)
 

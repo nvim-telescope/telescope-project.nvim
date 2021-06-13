@@ -1,3 +1,5 @@
+path = require("plenary.path")
+
 local M = {}
 
 -- The file path to telescope projects
@@ -5,10 +7,9 @@ M.telescope_projects_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
 -- Initialize file if does not exist
 M.init_file = function()
-  if not M.file_exists(M.telescope_projects_file) then
-    local newFile = io.open(M.telescope_projects_file, "w")
-    newFile:write()
-    newFile:close()
+  local telescope_projects_path = path:new(M.telescope_projects_file)
+  if not telescope_projects_path:exists() then
+    telescope_projects_path:touch()
   end
 end
 
@@ -80,17 +81,6 @@ end
 M.store_project = function(file, project)
   local line = project.title .. "=" .. project.path .. "=" .. project.activated .. "\n"
   file:write(line)
-end
-
--- Checks if file exists at a given path
-M.file_exists = function(path)
-   local file = io.open(path, "r")
-   if file ~= nil then
-     io.close(file)
-     return true
-   else
-     return false
-   end
 end
 
 -- Trim whitespace for strings
