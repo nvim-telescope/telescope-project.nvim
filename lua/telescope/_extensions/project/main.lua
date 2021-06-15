@@ -16,7 +16,8 @@ local M = {}
 local base_dir
 local max_depth
 
--- Allow user to set base_dir in setup
+-- Setup function sets variables, cleans up missing projects,
+-- and updates projects via git project scanner
 M.setup = function(setup_config)
   base_dir = setup_config.base_dir or nil
   max_depth = setup_config.max_depth or 3
