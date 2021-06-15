@@ -20,6 +20,7 @@ local max_depth
 M.setup = function(setup_config)
   base_dir = setup_config.base_dir or nil
   max_depth = setup_config.max_depth or 3
+  _utils.cleanup_missing_projects()
   _git.update_git_repos(base_dir, max_depth)
 end
 
