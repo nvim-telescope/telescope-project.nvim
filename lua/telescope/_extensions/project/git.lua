@@ -7,19 +7,19 @@ M.tmp_path = "/tmp/found_projects.txt"
 
 -- Find and store git repos if base_dir provided
 M.update_git_repos = function(base_dir, max_depth)
-  M.search_for_git_repos(base_dir, max_depth)
-  local git_projects = M.parse_git_repo_paths()
-  M.save_git_repos(git_projects)
+  if base_dir then
+    M.search_for_git_repos(base_dir, max_depth)
+    local git_projects = M.parse_git_repo_paths()
+    M.save_git_repos(git_projects)
+  end
 end
 
 -- Recurses directories under base directory to find all git projects
 M.search_for_git_repos = function(base_dir, max_depth)
-  if base_dir then
-    local max_depth_arg = " -maxdepth " .. max_depth
-    local find_args = " -type d -name .git -printf '%h\n'"
-    local shell_cmd = "find " .. base_dir .. max_depth_arg .. find_args
-    os.execute(shell_cmd .. " > " .. M.tmp_path)
-  end
+  local max_depth_arg = " -maxdepth " .. max_depth
+  local find_args = " -type d -name .git -printf '%h\n'"
+  local shell_cmd = "find " .. base_dir .. max_depth_arg .. find_args
+  os.execute(shell_cmd .. " > " .. M.tmp_path)
 end
 
 -- Reads tmp file, converting paths to projects
