@@ -56,23 +56,8 @@ describe("utils", function()
           found_test_project = true
         end
       end
+
       assert.equal(true, found_test_project)
-
-      -- remove example project and run cleanup
-      path:new(example_project_path):rm()
-      utils.cleanup_missing_projects()
-
-      -- recheck that example project was not found now that it is gone
-      projects = utils.get_projects()
-      found_test_project = false
-      for _, stored_project in pairs(projects) do
-        if stored_project.path == example_project_path then
-          found_test_project = true
-        end
-      end
-      assert.equal(false, found_test_project)
-
-      -- cleanup
       test_projects_path:rm()
     end)
 
