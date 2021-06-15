@@ -1,5 +1,5 @@
 local finders = require("telescope.finders")
-local utils = require("telescope.utils")
+local strings = require("plenary.strings")
 local entry_display = require("telescope.pickers.entry_display")
 
 local M = {}
@@ -22,7 +22,7 @@ M.project_finder = function(opts, projects)
       project.display_path = ''
     end
     for key, value in pairs(widths) do
-      widths[key] = math.max(value, utils.strdisplaywidth(project[key] or ''))
+      widths[key] = math.max(value, strings.strdisplaywidth(project[key] or ''))
     end
   end
 
