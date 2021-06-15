@@ -10,7 +10,7 @@ M.project_finder = function(opts, projects)
   local display_type = opts.display_type
   local widths = {
     title = 0,
-    dir = 0,
+    display_path = 0,
   }
 
   -- Loop over all of the projects and find the maximum length of
@@ -30,7 +30,7 @@ M.project_finder = function(opts, projects)
     separator = " ",
     items = {
       { width = widths.title },
-      { width = widths.dir },
+      { width = widths.display_path },
     }
   }
   local make_display = function(project)
