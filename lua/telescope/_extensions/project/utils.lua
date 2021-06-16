@@ -1,3 +1,5 @@
+local Path = require('plenary.path')
+
 local M = {}
 
 -- The file path to telescope projects
@@ -5,7 +7,7 @@ M.telescope_projects_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 
 -- Initialize file if does not exist
 M.init_file = function()
-  local file_path = require'plenary'.path:new(M.telescope_projects_file)
+  local file_path = Path:new(M.telescope_projects_file)
   if not file_path:exists() then
     file_path:touch()
   end
@@ -15,8 +17,9 @@ end
 M.get_projects = function()
   local filtered_projects = {}
   for _, project in pairs(M.get_project_objects()) do
+    local path_exists = Path:new(project.path):exists()
     local is_activated = tonumber(project.activated) == 1
-    if is_activated then
+    if path_exists and is_activated then
       table.insert(filtered_projects, project)
     end
   end
