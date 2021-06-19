@@ -40,6 +40,19 @@ require'telescope'.extensions.project.project{}
 | `R` | find a recently opened file within your project               |
 | `f` | find a file within your project (same as \<CR\>)              |
 
+## Default mappings (insert mode):
+
+| Key | Description                                                   |
+|-----|---------------------------------------------------------------|
+| `<c-d>` | delete currently selected project                             |
+| `<c-m>` | rename currently selected project                             |
+| `<c-c>` | create a project\*                                            |
+| `<c-s>` | search inside files within your project                       |
+| `<c-b>` | browse inside files within your project                       |
+| `<c-w>` | change to the selected project's directory without opening it |
+| `<c-r>` | find a recently opened file within your project               |
+| `<c-f>` | find a file within your project (same as \<CR\>)              |
+
 \* *defaults to your git root if used inside a git project, otherwise, it will use your current working directory*
 
 Example key map config:
