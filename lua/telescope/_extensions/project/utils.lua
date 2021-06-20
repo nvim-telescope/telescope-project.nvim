@@ -17,9 +17,8 @@ end
 M.get_projects = function()
   local filtered_projects = {}
   for _, project in pairs(M.get_project_objects()) do
-    local path_exists = Path:new(project.path):exists()
     local is_activated = tonumber(project.activated) == 1
-    if path_exists and is_activated then
+    if is_activated then
       table.insert(filtered_projects, project)
     end
   end
