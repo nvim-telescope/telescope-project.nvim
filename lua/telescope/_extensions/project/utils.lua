@@ -98,8 +98,20 @@ M.has_value = function(tbl, val)
   return false
 end
 
+-- Check that string starts with given value
 M.string_starts_with = function(text, start)
    return string.sub(text, 1, string.len(start)) == start
+end
+
+-- Change directory only when path exists
+M.change_project_dir = function(project_path)
+  if Path:new(project_path):exists() then
+    vim.fn.execute("cd " .. project_path, "silent")
+    return true
+  else
+    print("The path '" .. project_path .. "' does not exist")
+    return false
+  end
 end
 
 return M

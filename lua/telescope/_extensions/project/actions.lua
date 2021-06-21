@@ -81,8 +81,8 @@ end
 M.find_project_files = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  vim.fn.execute("cd " .. project_path, "silent")
-  builtin.find_files({cwd = project_path})
+  local cd_successful = _utils.change_project_dir(project_path)
+  if cd_successful then builtin.find_files({cwd = project_path}) end
 end
 
 -- Browse through files within the selected project using
@@ -90,8 +90,8 @@ end
 M.browse_project_files = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  vim.fn.execute("cd " .. project_path, "silent")
-  builtin.file_browser({cwd = project_path})
+  local cd_successful = _utils.change_project_dir(project_path)
+  if cd_successful then builtin.file_browser({cwd = project_path}) end
 end
 
 -- Search within files in the selected project using
@@ -99,8 +99,8 @@ end
 M.search_in_project_files = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  vim.fn.execute("cd " .. project_path, "silent")
-  builtin.live_grep({cwd = project_path})
+  local cd_successful = _utils.change_project_dir(project_path)
+  if cd_successful then builtin.live_grep({cwd = project_path}) end
 end
 
 -- Search the recently used files within the selected project
@@ -108,15 +108,15 @@ end
 M.recent_project_files = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  vim.fn.execute("cd " .. project_path, "silent")
-  builtin.oldfiles({cwd_only = true})
+  local cd_successful = _utils.change_project_dir(project_path)
+  if cd_successful then builtin.oldfiles({cwd_only = true}) end
 end
 
 -- Change working directory to the selected project and close the picker.
 M.change_working_directory = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions.close(prompt_bufnr)
-  vim.fn.execute("cd " .. project_path, "silent")
+  _utils.change_project_dir(project_path)
 end
 
 return transform_mod(M)
