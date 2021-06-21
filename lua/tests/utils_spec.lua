@@ -24,6 +24,14 @@ describe("utils", function()
       assert.equal(false, utils.has_value(paths, "/projects/C"))
     end)
 
+    it ("change project directory works", function()
+      local test_dir = path:new("/tmp/test_dir")
+      test_dir:mkdir()
+      assert.equal(true, utils.change_project_dir(test_dir.filename))
+      test_dir:rmdir()
+      assert.equal(false, utils.change_project_dir(test_dir.filename))
+    end)
+
   end)
 
   describe("project", function()
