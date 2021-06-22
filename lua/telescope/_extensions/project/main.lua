@@ -53,7 +53,7 @@ M.project = function(opts)
 
       map('i', '<c-d>', _actions.delete_project)
       map('i', '<c-v>', _actions.rename_project)
-      map('i', '<c-c>', _actions.add_project)
+      map('i', '<c-a>', _actions.add_project)
       map('i', '<c-f>', _actions.find_project_files)
       map('i', '<c-b>', _actions.browse_project_files)
       map('i', '<c-s>', _actions.search_in_project_files)

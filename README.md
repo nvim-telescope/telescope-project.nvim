@@ -46,7 +46,7 @@ require'telescope'.extensions.project.project{}
 |-----|---------------------------------------------------------------|
 | `<c-d>` | delete currently selected project                             |
 | `<c-v>` | rename currently selected project                             |
-| `<c-c>` | create a project\*                                            |
+| `<c-a>` | create a project\*                                            |
 | `<c-s>` | search inside files within your project                       |
 | `<c-b>` | browse inside files within your project                       |
 | `<c-w>` | change to the selected project's directory without opening it |
