@@ -1,4 +1,5 @@
 local finders = require("telescope.finders")
+local Path = require('plenary.path')
 local strings = require("plenary.strings")
 local entry_display = require("telescope.pickers.entry_display")
 
@@ -20,6 +21,10 @@ M.project_finder = function(opts, projects)
       project.display_path = '[' .. project.path .. ']'
     else
       project.display_path = ''
+    end
+    local project_path_exists = Path:new(project.path):exists()
+    if not project_path_exists then
+      project.title = project.title .. " [deleted]"
     end
     for key, value in pairs(widths) do
       widths[key] = math.max(value, strings.strdisplaywidth(project[key] or ''))

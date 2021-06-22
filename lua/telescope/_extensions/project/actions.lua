@@ -43,13 +43,14 @@ end
 
 -- Rename the selected project within the `telescope_projects_file`.
 M.rename_project = function(prompt_bufnr)
+  local selected_path = M.get_selected_path(prompt_bufnr)
   local selected_title = M.get_selected_title(prompt_bufnr)
   local new_title = vim.fn.input('Rename ' ..selected_title.. ' to: ', selected_title)
   local projects = _utils.get_project_objects()
 
   local file = io.open(_utils.telescope_projects_file, "w")
   for _, project in pairs(projects) do
-    if project.title == selected_title then
+    if project.path == selected_path then
       project.title = new_title
     end
     _utils.store_project(file, project)
@@ -61,61 +62,61 @@ end
 -- Delete (deactivate) the selected project from the `telescope_projects_file`
 M.delete_project = function(prompt_bufnr)
   local projects = _utils.get_project_objects()
-  local selected_title = M.get_selected_title(prompt_bufnr)
+  local selected_path = M.get_selected_path(prompt_bufnr)
 
   local file = io.open(_utils.telescope_projects_file, "w")
   for _, project in pairs(projects) do
-    if project.title == selected_title then
+    if project.path == selected_path then
       project.activated = 0
     end
     _utils.store_project(file, project)
   end
 
   io.close(file)
-  print('Project deleted: ' .. selected_title)
+  print('Project deleted: ' .. selected_path)
 end
 
 -- Find files within the selected project using the
 -- Telescope builtin `find_files`.
 M.find_project_files = function(prompt_bufnr)
-  local dir = actions.get_selected_entry(prompt_bufnr).value
+  local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  vim.fn.execute("cd " .. dir, "silent")
-  builtin.find_files({cwd = dir})
+  local cd_successful = _utils.change_project_dir(project_path)
+  if cd_successful then builtin.find_files({cwd = project_path}) end
 end
 
 -- Browse through files within the selected project using
 -- the Telescope builtin `file_browser`.
 M.browse_project_files = function(prompt_bufnr)
-  local dir = actions.get_selected_entry(prompt_bufnr).value
+  local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  vim.fn.execute("cd " .. dir, "silent")
-  builtin.file_browser({cwd = dir})
+  local cd_successful = _utils.change_project_dir(project_path)
+  if cd_successful then builtin.file_browser({cwd = project_path}) end
 end
 
 -- Search within files in the selected project using
 -- the Telescope builtin `live_grep`.
 M.search_in_project_files = function(prompt_bufnr)
-  local dir = actions.get_selected_entry(prompt_bufnr).value
+  local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  vim.fn.execute("cd " .. dir, "silent")
-  builtin.live_grep({cwd = dir})
+  local cd_successful = _utils.change_project_dir(project_path)
+  if cd_successful then builtin.live_grep({cwd = project_path}) end
 end
 
 -- Search the recently used files within the selected project
 -- using the Telescope builtin `oldfiles`.
 M.recent_project_files = function(prompt_bufnr)
-  local dir = actions.get_selected_entry(prompt_bufnr).value
+  local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  vim.fn.execute("cd " .. dir, "silent")
-  builtin.oldfiles({cwd_only = true})
+  local cd_successful = _utils.change_project_dir(project_path)
+  if cd_successful then builtin.oldfiles({cwd_only = true}) end
 end
 
 -- Change working directory to the selected project and close the picker.
 M.change_working_directory = function(prompt_bufnr)
-  local dir = actions.get_selected_entry(prompt_bufnr).value
+  local project_path = M.get_selected_path(prompt_bufnr)
   actions.close(prompt_bufnr)
-  vim.fn.execute("cd " .. dir, "silent")
+  _utils.change_project_dir(project_path)
 end
 
 return transform_mod(M)
