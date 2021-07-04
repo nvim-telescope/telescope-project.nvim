@@ -82,8 +82,7 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 
 | Keys        | Description                                      | Options                |
 |-------------|--------------------------------------------------|------------------------|
-| `base_dir`  | path to projects (all git repos will be added)   | string  (default: nil) |
-| `max_depth` | maximum depth to recursively search for projects | integer (default: 3)   |
+| `base_dirs` | Array of project base directory configurations   | table (default: nil)   |
 
 Setup settings can be added when requiring telescope, as shown below:  
 
@@ -91,9 +90,13 @@ Setup settings can be added when requiring telescope, as shown below:
 require('telescope').setup {
   extensions = {
     project = {
-      base_dir = '~/projects',
-      max_depth = 3
-    }
+      base_dirs = {
+        '~/dev/src',
+        {'~/dev/src2'},
+        {'~/dev/src3', max_depth = 4},
+        {path = '~/dev/src4'},
+        {path = '~/dev/src5', max_depth = 2}
+      }
   }
 }
 ```

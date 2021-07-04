@@ -13,14 +13,17 @@ local _utils = require("telescope._extensions.project.utils")
 local M = {}
 
 -- Variables that setup can change
-local base_dir
-local max_depth
+local base_dirs
 
--- Allow user to set base_dir and max_depth in setup
+-- Allow user to set base_dirs
 M.setup = function(setup_config)
-  base_dir = setup_config.base_dir or nil
-  max_depth = setup_config.max_depth or 3
-  _git.update_git_repos(base_dir, max_depth)
+
+  if setup_config.base_dir then
+    error("'base_dir' is not a valid value for setup. See 'base_dirs'")
+  end
+
+  base_dirs = setup_config.base_dirs or nil
+  _git.update_git_repos(base_dirs)
 end
 
 -- This creates a picker with a list of all of the projects

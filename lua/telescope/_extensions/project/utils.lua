@@ -114,4 +114,30 @@ M.change_project_dir = function(project_path)
   end
 end
 
+-- Normalize the base_dirs configurations
+M.normalize_base_dir_configs = function(base_dirs)
+  local normalize_path = function(dir)
+    if type(dir) == "table" then
+      return dir[1] or dir.path
+    else -- string
+      return dir
+    end
+  end
+  local normalize_max_depth = function(dir)
+    if type(dir) == "table" then
+      return dir.max_depth or 3
+    else
+      return 3
+    end
+  end
+  local normalized_base_dir_configs = {}
+  for _, dir in ipairs(base_dirs) do
+    table.insert(normalized_base_dir_configs, {
+        path = normalize_path(dir),
+        max_depth = normalize_max_depth(dir)
+      })
+  end
+  return normalized_base_dir_configs
+end
+
 return M
