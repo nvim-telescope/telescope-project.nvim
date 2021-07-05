@@ -17,7 +17,7 @@ end
 -- Recurses directories under base directory to find all git projects
 M.search_for_git_repos = function(base_dir, max_depth)
   local max_depth_arg = " -maxdepth " .. max_depth
-  local find_args = " -type d -name .git -printf '%h\n'"
+  local find_args = " -type d -name .git  -exec dirname {} \\;"
   local shell_cmd = "find " .. base_dir .. max_depth_arg .. find_args
   os.execute(shell_cmd .. " > " .. M.tmp_path)
 end
