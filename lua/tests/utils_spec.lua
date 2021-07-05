@@ -69,6 +69,33 @@ describe("utils", function()
       test_projects_path:rm()
     end)
 
+    it("normalize base_dirs configuration", function()
+
+      -- assert helper function
+      local config_has = function(config, path, max_depth)
+        return config.path == path and config.max_depth == max_depth
+      end
+
+      -- test base_dirs config
+      local base_dirs = {
+        'path1',
+        {'path2'},
+        {'path3', max_depth = 4},
+        {path = 'path4'},
+        {path = 'path5', max_depth = 2}
+      }
+
+      -- normalize the configurations
+      local normalized_configs = utils.normalize_base_dir_configs(base_dirs)
+
+      assert.equal(true, config_has(normalized_configs[1], 'path1', 3))
+      assert.equal(true, config_has(normalized_configs[2], 'path2', 3))
+      assert.equal(true, config_has(normalized_configs[3], 'path3', 4))
+      assert.equal(true, config_has(normalized_configs[4], 'path4', 3))
+      assert.equal(true, config_has(normalized_configs[5], 'path5', 2))
+
+    end)
+
   end)
 
 end)

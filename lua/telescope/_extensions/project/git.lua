@@ -1,35 +1,42 @@
 local _utils = require("telescope._extensions.project.utils")
+local iter = require("plenary.iterators")
+local path = require("plenary.path")
+local scan = require("plenary.scandir")
 
 local M = {}
 
--- Temporary store for git repo list
-M.tmp_path = "/tmp/found_projects.txt"
-
--- Find and store git repos if base_dir provided
-M.update_git_repos = function(base_dir, max_depth)
-  if base_dir then
-    M.search_for_git_repos(base_dir, max_depth)
-    local git_projects = M.parse_git_repo_paths()
+-- Find and store git repos if base_dirs provided
+M.update_git_repos = function(base_dirs)
+  if base_dirs then
+    local normalized_config = _utils.normalize_base_dir_configs(base_dirs)
+    local repo_paths  = M.search_for_git_repos(normalized_config)
+    local git_projects = M.parse_git_repo_paths(repo_paths)
     M.save_git_repos(git_projects)
   end
 end
 
--- Recurses directories under base directory to find all git projects
-M.search_for_git_repos = function(base_dir, max_depth)
-  local max_depth_arg = " -maxdepth " .. max_depth
-  local find_args = " -type d -name .git  -exec dirname {} \\;"
-  local shell_cmd = "find " .. base_dir .. max_depth_arg .. find_args
-  os.execute(shell_cmd .. " > " .. M.tmp_path)
+-- Recurses directories under base directories to find all git projects
+M.search_for_git_repos = function(base_dirs)
+  return iter.iter(base_dirs)
+    :map(function(base_dir)
+      local git_dirs = scan.scan_dir(vim.fn.expand(base_dir.path), {
+        depth = base_dir.max_depth,
+        add_dirs = true,
+        hidden = true,
+        search_pattern = "%.git$"
+      })
+      return iter.iter(git_dirs)
+        :map(function(git_dir) return path:new(git_dir):parent() end)
+    end)
+    :flatten()
+    :tolist()
 end
 
 -- Reads tmp file, converting paths to projects
-M.parse_git_repo_paths = function()
-  local git_projects = {}
-  for path in io.lines(M.tmp_path) do
-    local project = _utils.get_project_from_path(path)
-    table.insert(git_projects, project)
-  end
-  return git_projects
+M.parse_git_repo_paths = function(repo_paths)
+  return iter.iter(repo_paths)
+    :map(function(repo_path) return _utils.get_project_from_path(repo_path) end)
+    :tolist()
 end
 
 -- Write project to telescope projects file
