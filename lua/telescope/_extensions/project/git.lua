@@ -43,6 +43,7 @@ M.save_git_repos = function(git_projects)
       _utils.store_project(file, project)
     end
   end
+  file:close()
 end
 
 -- Attempt to locate git directory, else return cwd
