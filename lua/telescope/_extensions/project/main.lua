@@ -19,7 +19,7 @@ local base_dirs
 M.setup = function(setup_config)
 
   if setup_config.base_dir then
-    error("'base_dir' is not a valid value for setup. See 'base_dirs'")
+    error("'base_dir' is no longer a valid value for setup. See 'base_dirs'")
   end
 
   base_dirs = setup_config.base_dirs or nil
