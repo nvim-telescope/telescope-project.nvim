@@ -12,7 +12,16 @@ that allows you to switch between projects.
 You can setup the extension by adding the following to your config:
 
 ```lua
-require'telescope'.load_extension('project')
+  use {
+    'nvim-telescope/telescope-project.nvim',
+    requires = {
+      'nvim-telescope/telescope.nvim',
+      'oskarskog/project.nvim'
+    },
+    config = function()
+      require('telescope').load_extension('project')
+    end
+  }
 ```
 
 You may skip explicitly loading extensions (they will then be lazy-loaded), but tab completions will not be available right away.
