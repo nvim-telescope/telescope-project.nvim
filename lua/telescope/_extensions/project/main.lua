@@ -7,8 +7,9 @@ local conf = require("telescope.config").values
 -- telescope-project modules
 local _actions = require("telescope._extensions.project.actions")
 local _finders = require("telescope._extensions.project.finders")
-local _git = require("telescope._extensions.project.git")
 local _utils = require("telescope._extensions.project.utils")
+
+local _project = require("project")
 
 local M = {}
 
@@ -21,9 +22,8 @@ M.setup = function(setup_config)
   if setup_config.base_dir then
     error("'base_dir' is no longer a valid value for setup. See 'base_dirs'")
   end
-
   base_dirs = setup_config.base_dirs or nil
-  _git.update_git_repos(base_dirs)
+  _project.discover_and_write_projects(_utils.normalize_base_dir_configs(base_dirs))
 end
 
 -- This creates a picker with a list of all of the projects
@@ -31,13 +31,13 @@ M.project = function(opts)
   pickers.new(opts or {}, {
     prompt_title = 'Select a project',
     results_title = 'Projects',
-    finder = _finders.project_finder(opts, _utils.get_projects()),
+    finder = _finders.project_finder(opts, _project.read_projects()),
     sorter = conf.file_sorter(opts),
     attach_mappings = function(prompt_bufnr, map)
 
       local refresh_projects = function()
         local picker = action_state.get_current_picker(prompt_bufnr)
-        local finder = _finders.project_finder(opts, _utils.get_projects())
+        local finder = _finders.project_finder(opts, _project.read_projects())
         picker:refresh(finder, { reset_prompt = true })
       end
 

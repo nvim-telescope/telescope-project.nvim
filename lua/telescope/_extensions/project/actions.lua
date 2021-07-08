@@ -1,9 +1,10 @@
 local builtin = require("telescope.builtin")
 local actions = require("telescope.actions")
 local transform_mod = require('telescope.actions.mt').transform_mod
-
-local _git = require("telescope._extensions.project.git")
 local _utils = require("telescope._extensions.project.utils")
+local _project = require("project")
+local init_project_from_path = require("project.utils").init_project_from_path
+local iter = require("plenary.iterators").iter
 
 local M = {}
 
@@ -17,62 +18,32 @@ M.get_selected_path = function(prompt_bufnr)
   return actions.get_selected_entry(prompt_bufnr).value
 end
 
--- Create a new project and add it to the list in the `telescope_projects_file`
+-- Create a new project and add it to the list in the `projects_file`
 M.add_project = function()
-  local path = _git.try_and_find_git_path()
-  local projects = _utils.get_project_objects()
-  local path_not_in_projects = true
-
-  local file = io.open(_utils.telescope_projects_file, "w")
-  for _, project in pairs(projects) do
-    if project.path == path then
-      project.activated = 1
-      path_not_in_projects = false
-    end
-    _utils.store_project(file, project)
-  end
-
-  if path_not_in_projects then
-    local new_project = _utils.get_project_from_path(path)
-    _utils.store_project(file, new_project)
-  end
-
-  io.close(file)
+  local path = _project.get_root()
+  local project = init_project_from_path(path)
+  _project.add_projects({project})
   print('Project added: ' .. path)
 end
 
--- Rename the selected project within the `telescope_projects_file`.
+-- Rename the selected project within the `projects_file`.
 M.rename_project = function(prompt_bufnr)
   local selected_path = M.get_selected_path(prompt_bufnr)
   local selected_title = M.get_selected_title(prompt_bufnr)
   local new_title = vim.fn.input('Rename ' ..selected_title.. ' to: ', selected_title)
-  local projects = _utils.get_project_objects()
-
-  local file = io.open(_utils.telescope_projects_file, "w")
-  for _, project in pairs(projects) do
-    if project.path == selected_path then
-      project.title = new_title
-    end
-    _utils.store_project(file, project)
-  end
-
-  io.close(file)
+  local projects = _project.read_projects()
+  local selected_project = iter(projects):find(function(p) return p.path == selected_path end)
+  selected_project.title = new_title
+  _project.write_projects(projects)
 end
 
--- Delete (deactivate) the selected project from the `telescope_projects_file`
+-- Delete (deactivate) the selected project from the `projects_file`
 M.delete_project = function(prompt_bufnr)
-  local projects = _utils.get_project_objects()
+  local projects = _project.read_projects()
   local selected_path = M.get_selected_path(prompt_bufnr)
-
-  local file = io.open(_utils.telescope_projects_file, "w")
-  for _, project in pairs(projects) do
-    if project.path == selected_path then
-      project.activated = 0
-    end
-    _utils.store_project(file, project)
-  end
-
-  io.close(file)
+  local selected_project = iter(projects):find(function(p) return p.path == selected_path end)
+  selected_project.activated = false
+  _project.write_projects(projects)
   print('Project deleted: ' .. selected_path)
 end
 
