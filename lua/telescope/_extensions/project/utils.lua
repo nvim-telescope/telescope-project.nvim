@@ -55,14 +55,19 @@ end
 
 -- Extracts information from telescope projects line
 M.parse_project_line = function(line)
-  local title, path, activated = line:match("^(.-)=(.-)=(.-)$")
-  if not activated then
+  local title, path, workspace, activated = line:match("^(.-)=(.-)=(.-)=(.-)$")
+  if not workspace then
     title, path = line:match("^(.-)=(.-)$")
+    workspace = 'w0'
+  end
+  if not activated then
+    title, path, workspace = line:match("^(.-)=(.-)=(.-)$")
     activated = 1
   end
   return {
     title = title,
     path = path,
+    workspace = workspace,
     last_accessed = M.get_last_accessed_time(path),
     activated = activated
   }
@@ -71,8 +76,9 @@ end
 -- Parses path into project object (activated by default)
 M.get_project_from_path = function(path)
     local title = path:match("[^/]+$")
+    local workspace = 'w0'
     local activated = 1
-    local line = title .. "=" .. path .. "=" .. activated
+    local line = title .. "=" .. path .. "=" .. workspace .. "=" .. activated
     return M.parse_project_line(line)
 end
 
@@ -85,7 +91,7 @@ end
 
 -- Standardized way of storing project to file
 M.store_project = function(file, project)
-  local line = project.title .. "=" .. project.path .. "=" .. project.activated .. "\n"
+  local line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "\n"
   file:write(line)
 end
 
