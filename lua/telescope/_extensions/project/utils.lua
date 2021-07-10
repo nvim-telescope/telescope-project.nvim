@@ -4,12 +4,18 @@ local M = {}
 
 -- The file path to telescope projects
 M.telescope_projects_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
+-- The file path to telescope workspaces
+M.telescope_workspaces_file = vim.fn.stdpath('data') .. '/telescope-workspaces.txt'
 
 -- Initialize file if does not exist
-M.init_file = function()
-  local file_path = Path:new(M.telescope_projects_file)
-  if not file_path:exists() then
-    file_path:touch()
+M.init_files = function()
+  local projects_file_path = Path:new(M.telescope_projects_file)
+  if not projects_file_path:exists() then
+    projects_file_path:touch()
+  end
+  local workspaces_file_path = Path:new(M.telescope_workspaces_file)
+  if not workspaces_file_path:exists() then
+    workspaces_file_path:touch()
   end
 end
 
