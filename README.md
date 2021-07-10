@@ -1,6 +1,6 @@
 # telescope-project.nvim
 
-An extension for [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) 
+An extension for [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim)
 that allows you to switch between projects.
 
 ## Demo
@@ -30,7 +30,7 @@ require'telescope'.extensions.project.project{}
 ## Default mappings (normal mode):
 
 | Key | Description                                                   |
-|-----|---------------------------------------------------------------|
+| --- | ------------------------------------------------------------- |
 | `d` | delete currently selected project                             |
 | `r` | rename currently selected project                             |
 | `c` | create a project\*                                            |
@@ -42,18 +42,24 @@ require'telescope'.extensions.project.project{}
 
 ## Default mappings (insert mode):
 
-| Key | Description                                                   |
-|-----|---------------------------------------------------------------|
+| Key     | Description                                                   |
+| ------- | ------------------------------------------------------------- |
 | `<c-d>` | delete currently selected project                             |
 | `<c-v>` | rename currently selected project                             |
 | `<c-a>` | create a project\*                                            |
 | `<c-s>` | search inside files within your project                       |
 | `<c-b>` | browse inside files within your project                       |
-| `<c-w>` | change to the selected project's directory without opening it |
+| `<c-l>` | change to the selected project's directory without opening it |
 | `<c-r>` | find a recently opened file within your project               |
 | `<c-f>` | find a file within your project (same as \<CR\>)              |
 
-\* *defaults to your git root if used inside a git project, otherwise, it will use your current working directory*
+\* _defaults to your git root if used inside a git project, otherwise, it will use your current working directory_
+
+## Workspace mappings (insert mode):
+
+| Key     | Description      |
+| ------- | ---------------- |
+| `<c-w>` | change workspace |
 
 Example key map config:
 
@@ -65,14 +71,14 @@ vim.api.nvim_set_keymap(
     {noremap = true, silent = true}
 )
 ```
- 
+
 ## Available options:
 
-| Keys           | Description                                 | Options                       |
-|----------------|---------------------------------------------|-------------------------------|
-| `display_type` | Show the title and the path of the project  | 'full' or 'minimal' (default) |
+| Keys           | Description                                | Options                       |
+| -------------- | ------------------------------------------ | ----------------------------- |
+| `display_type` | Show the title and the path of the project | 'full' or 'minimal' (default) |
 
-Options can be added when requiring telescope-project, as shown below:  
+Options can be added when requiring telescope-project, as shown below:
 
 ```lua
 lua require'telescope'.extensions.project.project{ display_type = 'full' }
@@ -80,11 +86,11 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 
 ## Available setup settings:
 
-| Keys        | Description                                      | Options                |
-|-------------|--------------------------------------------------|------------------------|
-| `base_dirs` | Array of project base directory configurations   | table (default: nil)   |
+| Keys        | Description                                    | Options              |
+| ----------- | ---------------------------------------------- | -------------------- |
+| `base_dirs` | Array of project base directory configurations | table (default: nil) |
 
-Setup settings can be added when requiring telescope, as shown below:  
+Setup settings can be added when requiring telescope, as shown below:
 
 ```lua
 require('telescope').setup {

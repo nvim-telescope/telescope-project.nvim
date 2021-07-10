@@ -6,7 +6,7 @@ if not has_telescope then
   error('This plugins requires nvim-telescope/telescope.nvim')
 end
 
-utils.init_file()
+utils.init_files()
 
 return telescope.register_extension{
   setup = main.setup,
