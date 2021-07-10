@@ -45,6 +45,7 @@ M.project = function(opts)
       _actions.delete_project:enhance({ post = refresh_projects })
       _actions.rename_project:enhance({ post = refresh_projects })
 
+      -- Project key mappings
       map('n', 'd', _actions.delete_project)
       map('n', 'r', _actions.rename_project)
       map('n', 'c', _actions.add_project)
@@ -62,6 +63,8 @@ M.project = function(opts)
       map('i', '<c-s>', _actions.search_in_project_files)
       map('i', '<c-r>', _actions.recent_project_files)
       map('i', '<c-l>', _actions.change_working_directory)
+
+      -- Workspace key mappings
       map('i', '<c-w>', _actions.change_workspace)
 
       local on_project_selected = function()
