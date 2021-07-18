@@ -78,11 +78,11 @@ end
 
 -- Find files within the selected project using the
 -- Telescope builtin `find_files`.
-M.find_project_files = function(prompt_bufnr)
+M.find_project_files = function(prompt_bufnr, hidden_files)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
   local cd_successful = _utils.change_project_dir(project_path)
-  if cd_successful then builtin.find_files({cwd = project_path}) end
+  if cd_successful then builtin.find_files({cwd = project_path, hidden = hidden_files}) end
 end
 
 -- Browse through files within the selected project using
