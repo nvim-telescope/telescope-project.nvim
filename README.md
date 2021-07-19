@@ -97,8 +97,8 @@ require('telescope').setup {
         {'~/dev/src3', max_depth = 4},
         {path = '~/dev/src4'},
         {path = '~/dev/src5', max_depth = 2},
-        hidden_files = true -- default: false
       }
+      hidden_files = true -- default: false
   }
 }
 ```
