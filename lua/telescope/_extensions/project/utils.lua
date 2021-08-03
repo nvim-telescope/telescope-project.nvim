@@ -64,7 +64,7 @@ end
 
 -- Parses path into project object (activated by default)
 M.get_project_from_path = function(path)
-    local title = path:match("[^/]+$")
+    local title = tostring(path):match("[^/]+$")
     local activated = 1
     local line = title .. "=" .. path .. "=" .. activated
     return M.parse_project_line(line)
