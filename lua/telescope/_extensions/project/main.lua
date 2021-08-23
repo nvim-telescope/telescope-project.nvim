@@ -3,6 +3,7 @@ local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
+local previewers = require("telescope._extensions.project.previewer")
 
 -- telescope-project modules
 local _actions = require("telescope._extensions.project.actions")
@@ -35,6 +36,7 @@ M.project = function(opts)
     results_title = 'Projects',
     finder = _finders.project_finder(opts, _utils.get_projects()),
     sorter = conf.file_sorter(opts),
+    previewer = previewers.previewer.new(opts),
     attach_mappings = function(prompt_bufnr, map)
 
       local refresh_projects = function()
