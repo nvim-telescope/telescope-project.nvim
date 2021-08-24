@@ -16,6 +16,7 @@ local M = {}
 -- Variables that setup can change
 local base_dirs
 local hidden_files
+local preview
 
 -- Allow user to set base_dirs
 M.setup = function(setup_config)
@@ -26,12 +27,15 @@ M.setup = function(setup_config)
 
   base_dirs = setup_config.base_dirs or nil
   hidden_files = setup_config.hidden_files or false
+  preview = setup_config.preview or {}
   _git.update_git_repos(base_dirs)
 end
 
 -- This creates a picker with a list of all of the projects
 M.project = function(opts)
-  pickers.new(opts or {}, {
+  opts = opts or {}
+  opts.preview = preview
+  pickers.new(opts, {
     prompt_title = 'Select a project',
     results_title = 'Projects',
     finder = _finders.project_finder(opts, _utils.get_projects()),

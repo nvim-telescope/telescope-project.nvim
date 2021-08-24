@@ -9,25 +9,34 @@ local function file_exists(name)
     if f ~= nil then io.close(f) return true else return false end
 end
 
-M.previewer = defaulter(function(_)
+M.previewer = defaulter(function(user_opts)
+    if user_opts.preview.disable == true then
+        return nil
+    end
     return previewers.new_buffer_previewer({
         title = "Preview",
         define_preview = function(self, entry, opts)
             -- Get the README or notes files, defaulting to displaying the folder
             local path = entry.path
-            local default_readme_files = {
-                "README.md",
-                "README.txt",
-                "readme.md",
-                "readme.txt",
-                "notes.md",
-                "notes.txt"
-            }
+            if user_opts.preview.dir_only == nil or user_opts.preview.dir_only == false then
+                local default_readme_files = {
+                    "README.md",
+                    "README.txt",
+                    "readme.md",
+                    "readme.txt",
+                }
+                local readme_files = default_readme_files
+                if user_opts.preview.additional_readmes then
+                    readme_files = table.merge(default_readme_files, user_opts.preview.additional_readmes)
+                end
 
-            for _, f in pairs(default_readme_files) do
-                local f_path = entry.path .. "/" .. f
-                if file_exists(f_path) then
-                    path = f_path
+
+                for _, f in pairs(readme_files) do
+                    local f_path = entry.path .. "/" .. f
+                    if file_exists(f_path) then
+                        path = f_path
+                        break
+                    end
                 end
             end
 
