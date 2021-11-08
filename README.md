@@ -86,9 +86,10 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 
 ## Available setup settings:
 
-| Keys        | Description                                    | Options              |
-| ----------- | ---------------------------------------------- | -------------------- |
-| `base_dirs` | Array of project base directory configurations | table (default: nil) |
+| Keys           | Description                                                   | Options                |
+|----------------|---------------------------------------------------------------|------------------------|
+| `base_dirs`    | Array of project base directory configurations                | table (default: nil)   |
+| `hidden_files` | Show hidden files in selected project                         | bool (default: false)  |
 
 Setup settings can be added when requiring telescope, as shown below:
 
@@ -101,8 +102,9 @@ require('telescope').setup {
         {'~/dev/src2'},
         {'~/dev/src3', max_depth = 4},
         {path = '~/dev/src4'},
-        {path = '~/dev/src5', max_depth = 2}
-      }
+        {path = '~/dev/src5', max_depth = 2},
+      },
+      hidden_files = true -- default: false
   }
 }
 ```
