@@ -41,7 +41,7 @@ describe("utils", function()
       -- initialize projects file where projects are stored
       local test_projects_file = "/tmp/telescope-projects-test.txt"
       utils.telescope_projects_file = test_projects_file
-      utils.init_file()
+      utils.init_files()
       local test_projects_path = path:new(test_projects_file)
 
       -- extract project information from path
