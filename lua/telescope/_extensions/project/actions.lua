@@ -120,4 +120,9 @@ M.change_working_directory = function(prompt_bufnr)
   _utils.change_project_dir(project_path)
 end
 
+-- Change working directory to the selected project and open the file tree
+M.open_in_file_tree = function(prompt_bufnr)
+    M.change_working_directory(prompt_bufnr)
+end
+
 return transform_mod(M)

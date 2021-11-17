@@ -15,14 +15,24 @@ local M = {}
 -- Variables that setup can change
 local base_dirs
 local hidden_files
+local file_tree
+
+local file_trees = {
+    NERDTree = { command = "NERDTree" },
+    Explore = { command = "Explore" }
+}
 
 -- Allow user to set base_dirs
 M.setup = function(setup_config)
-
   if setup_config.base_dir then
     error("'base_dir' is no longer a valid value for setup. See 'base_dirs'")
   end
 
+  if setup_config.file_tree and not file_trees[setup_config.file_tree] then
+    error("unsupported file tree. See the supported file tree list")
+  end
+
+  file_tree = file_trees[setup_config.file_tree] or file_trees.Explore
   base_dirs = setup_config.base_dirs or nil
   hidden_files = setup_config.hidden_files or false
   _git.update_git_repos(base_dirs)
@@ -43,9 +53,14 @@ M.project = function(opts)
         picker:refresh(finder, { reset_prompt = true })
       end
 
+      local open_file_tree = function()
+        _utils.open_file_tree(file_tree)
+      end
+
       _actions.add_project:enhance({ post = refresh_projects })
       _actions.delete_project:enhance({ post = refresh_projects })
       _actions.rename_project:enhance({ post = refresh_projects })
+      _actions.open_in_file_tree:enhance({ post = open_file_tree })
 
       map('n', 'd', _actions.delete_project)
       map('n', 'r', _actions.rename_project)
@@ -55,6 +70,7 @@ M.project = function(opts)
       map('n', 's', _actions.search_in_project_files)
       map('n', 'R', _actions.recent_project_files)
       map('n', 'w', _actions.change_working_directory)
+      map('n', 't', _actions.open_in_file_tree)
 
       map('i', '<c-d>', _actions.delete_project)
       map('i', '<c-v>', _actions.rename_project)
@@ -64,6 +80,7 @@ M.project = function(opts)
       map('i', '<c-s>', _actions.search_in_project_files)
       map('i', '<c-r>', _actions.recent_project_files)
       map('i', '<c-w>', _actions.change_working_directory)
+      map('i', '<c-t>', _actions.open_in_file_tree)
 
       local on_project_selected = function()
         _actions.find_project_files(prompt_bufnr, hidden_files)

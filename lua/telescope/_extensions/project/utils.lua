@@ -140,4 +140,9 @@ M.normalize_base_dir_configs = function(base_dirs)
   return normalized_base_dir_configs
 end
 
+-- Open file tree with the configured command
+M.open_file_tree = function(file_tree)
+    vim.fn.execute(file_tree.command)
+end
+
 return M
