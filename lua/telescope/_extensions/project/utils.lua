@@ -4,12 +4,18 @@ local M = {}
 
 -- The file path to telescope projects
 M.telescope_projects_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
+-- The file path to telescope workspaces
+M.telescope_workspaces_file = vim.fn.stdpath('data') .. '/telescope-workspaces.txt'
 
 -- Initialize file if does not exist
-M.init_file = function()
-  local file_path = Path:new(M.telescope_projects_file)
-  if not file_path:exists() then
-    file_path:touch()
+M.init_files = function()
+  local projects_file_path = Path:new(M.telescope_projects_file)
+  if not projects_file_path:exists() then
+    projects_file_path:touch()
+  end
+  local workspaces_file_path = Path:new(M.telescope_workspaces_file)
+  if not workspaces_file_path:exists() then
+    workspaces_file_path:touch()
   end
 end
 
@@ -49,14 +55,19 @@ end
 
 -- Extracts information from telescope projects line
 M.parse_project_line = function(line)
-  local title, path, activated = line:match("^(.-)=(.-)=(.-)$")
-  if not activated then
+  local title, path, workspace, activated = line:match("^(.-)=(.-)=(.-)=(.-)$")
+  if not workspace then
     title, path = line:match("^(.-)=(.-)$")
+    workspace = 'w0'
+  end
+  if not activated then
+    title, path, workspace = line:match("^(.-)=(.-)=(.-)$")
     activated = 1
   end
   return {
     title = title,
     path = path,
+    workspace = workspace,
     last_accessed = M.get_last_accessed_time(path),
     activated = activated
   }
@@ -64,9 +75,11 @@ end
 
 -- Parses path into project object (activated by default)
 M.get_project_from_path = function(path)
+    -- `tostring` to use plenary path and paths defined as strings
     local title = tostring(path):match("[^/]+$")
+    local workspace = 'w0'
     local activated = 1
-    local line = title .. "=" .. path .. "=" .. activated
+    local line = title .. "=" .. path .. "=" .. workspace .. "=" .. activated
     return M.parse_project_line(line)
 end
 
@@ -79,7 +92,7 @@ end
 
 -- Standardized way of storing project to file
 M.store_project = function(file, project)
-  local line = project.title .. "=" .. project.path .. "=" .. project.activated .. "\n"
+  local line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "\n"
   file:write(line)
 end
 

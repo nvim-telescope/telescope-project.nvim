@@ -60,6 +60,24 @@ M.rename_project = function(prompt_bufnr)
   io.close(file)
 end
 
+-- Change the selected projects workspace within the `telescope_projects_file`.
+M.change_workspace = function(prompt_bufnr)
+  local selected_path = M.get_selected_path(prompt_bufnr)
+  local projects = _utils.get_project_objects()
+  local new_workspace = vim.fn.input('Move project to workspace: ')
+
+  local file = io.open(_utils.telescope_projects_file, "w")
+  for _, project in pairs(projects) do
+    if project.path == selected_path then
+      project.workspace = 'w' .. new_workspace
+    end
+    _utils.store_project(file, project)
+  end
+
+  io.close(file)
+end
+
+
 -- Delete (deactivate) the selected project from the `telescope_projects_file`
 M.delete_project = function(prompt_bufnr)
   local projects = _utils.get_project_objects()
