@@ -3,6 +3,7 @@ local actions = require("telescope.actions")
 local action_state = require("telescope.actions.state")
 local pickers = require("telescope.pickers")
 local conf = require("telescope.config").values
+local themes = require "telescope.themes"
 
 -- telescope-project modules
 local _actions = require("telescope._extensions.project.actions")
@@ -17,10 +18,15 @@ local base_dirs
 local hidden_files
 
 -- Allow user to set base_dirs
+local theme_opts = {}
 M.setup = function(setup_config)
 
   if setup_config.base_dir then
     error("'base_dir' is no longer a valid value for setup. See 'base_dirs'")
+  end
+
+  if setup_config.theme and setup_config.theme ~= "" then
+    theme_opts = themes["get_" .. setup_config.theme]()
   end
 
   base_dirs = setup_config.base_dirs or nil
@@ -30,7 +36,8 @@ end
 
 -- This creates a picker with a list of all of the projects
 M.project = function(opts)
-  pickers.new(opts or {}, {
+  opts = vim.tbl_deep_extend("force", theme_opts, opts or {})
+  pickers.new(opts, {
     prompt_title = 'Select a project',
     results_title = 'Projects',
     finder = _finders.project_finder(opts, _utils.get_projects()),
