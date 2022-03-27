@@ -15,6 +15,7 @@ local M = {}
 -- Variables that setup can change
 local base_dirs
 local hidden_files
+local browse_by_default
 
 -- Allow user to set base_dirs
 M.setup = function(setup_config)
@@ -25,6 +26,7 @@ M.setup = function(setup_config)
 
   base_dirs = setup_config.base_dirs or nil
   hidden_files = setup_config.hidden_files or false
+  browse_by_default = setup_config.browse_by_default or nil
   _git.update_git_repos(base_dirs)
 end
 
@@ -70,7 +72,11 @@ M.project = function(opts)
       map('i', '<c-w>', _actions.change_workspace)
 
       local on_project_selected = function()
-        _actions.find_project_files(prompt_bufnr, hidden_files)
+        if browse_by_default then
+          _actions.browse_project_files(prompt_bufnr, hidden_files)
+        else
+          _actions.find_project_files(prompt_bufnr, hidden_files)
+        end
       end
       actions.select_default:replace(on_project_selected)
       return true
