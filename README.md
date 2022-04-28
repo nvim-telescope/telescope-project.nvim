@@ -7,6 +7,11 @@ that allows you to switch between projects.
 
 ![Demo](./demo.gif)
 
+## Requirements
+
+- [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) (required)
+- [telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim) (optional, only for `file_browser` action)
+
 ## Setup
 
 You can setup the extension by adding the following to your config:

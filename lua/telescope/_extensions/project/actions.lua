@@ -111,12 +111,17 @@ end
 -- Browse through files within the selected project using
 -- the Telescope builtin `file_browser`.
 M.browse_project_files = function(prompt_bufnr)
+  local ok, file_browser = pcall(require, "telescope._extensions.file_browser")
+  if not ok then
+    vim.notify( "telescope-file-browser.nvim is required to use this action!", vim.log.levels.ERROR, { title = "telescope-project.nvim" })
+    return
+  end
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
   local cd_successful = _utils.change_project_dir(project_path)
   if cd_successful then
     vim.schedule(function()
-      builtin.file_browser({cwd = project_path})
+      file_browser.exports.file_browser({ cwd = project_path })
     end)
   end
 end
