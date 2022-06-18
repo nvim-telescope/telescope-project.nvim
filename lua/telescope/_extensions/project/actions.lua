@@ -97,10 +97,10 @@ end
 
 -- Find files within the selected project using the
 -- Telescope builtin `find_files`.
-M.find_project_files = function(prompt_bufnr, hidden_files)
+M.find_project_files = function(prompt_bufnr, hidden_files, cwd_scope)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  local cd_successful = _utils.change_project_dir(project_path)
+  local cd_successful = _utils.change_project_dir(project_path, cwd_scope)
   if cd_successful then
     vim.schedule(function()
       builtin.find_files({cwd = project_path, hidden = hidden_files})
@@ -118,7 +118,7 @@ M.browse_project_files = function(prompt_bufnr)
   end
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  local cd_successful = _utils.change_project_dir(project_path)
+  local cd_successful = _utils.change_project_dir(project_path, "local")
   if cd_successful then
     vim.schedule(function()
       file_browser.exports.file_browser({ cwd = project_path })
@@ -131,7 +131,7 @@ end
 M.search_in_project_files = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  local cd_successful = _utils.change_project_dir(project_path)
+  local cd_successful = _utils.change_project_dir(project_path, "local")
   if cd_successful then
     vim.schedule(function()
       builtin.live_grep({cwd = project_path})
@@ -144,7 +144,7 @@ end
 M.recent_project_files = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  local cd_successful = _utils.change_project_dir(project_path)
+  local cd_successful = _utils.change_project_dir(project_path, "local")
   if cd_successful then
     vim.schedule(function()
       builtin.oldfiles({cwd_only = true})
@@ -156,7 +156,7 @@ end
 M.change_working_directory = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions.close(prompt_bufnr)
-  _utils.change_project_dir(project_path)
+  _utils.change_project_dir(project_path, "window")
 end
 
 return transform_mod(M)

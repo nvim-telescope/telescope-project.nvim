@@ -16,6 +16,7 @@ local M = {}
 -- Variables that setup can change
 local base_dirs
 local hidden_files
+local cwd_scope
 
 -- Allow user to set base_dirs
 local theme_opts = {}
@@ -31,6 +32,7 @@ M.setup = function(setup_config)
 
   base_dirs = setup_config.base_dirs or nil
   hidden_files = setup_config.hidden_files or false
+  cwd_scope = setup_config.cwd_scope or "window"
   _git.update_git_repos(base_dirs)
 end
 
@@ -77,7 +79,7 @@ M.project = function(opts)
       map('i', '<c-w>', _actions.change_workspace)
 
       local on_project_selected = function()
-        _actions.find_project_files(prompt_bufnr, hidden_files)
+        _actions.find_project_files(prompt_bufnr, hidden_files, cwd_scope)
       end
       actions.select_default:replace(on_project_selected)
       return true
