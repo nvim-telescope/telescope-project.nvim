@@ -55,12 +55,12 @@ end
 
 -- Attempt to locate git directory, else return cwd
 M.try_and_find_git_path = function()
-  local git_cmd = "git -C " .. vim.fn.fnameescape(vim.loop.cwd()) .. " rev-parse --show-toplevel"
+  local git_cmd = "git -C " .. vim.loop.cwd() .. " rev-parse --show-toplevel"
   local git_root = tostring(vim.fn.systemlist(git_cmd)[1]):gsub(".*","")
   local git_root_fatal = _utils.string_starts_with(git_root, 'fatal')
 
   if not git_root or git_root_fatal then
-    return vim.fn.fnameescape(vim.loop.cwd())
+    return vim.loop.cwd()
   end
   return git_root
 end
