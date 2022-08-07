@@ -111,6 +111,7 @@ require('telescope').setup {
       },
       hidden_files = true, -- default: false
       theme = "dropdown"
+    }
   }
 }
 ```
