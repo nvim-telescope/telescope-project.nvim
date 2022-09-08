@@ -116,10 +116,20 @@ M.string_starts_with = function(text, start)
    return string.sub(text, 1, string.len(start)) == start
 end
 
+M.open_in_nvim_tree = function(project_path)
+    local status_ok, nvim_tree = pcall(require, "nvim-tree")
+    if status_ok then
+      nvim_tree.change_dir(project_path)
+      nvim_tree.open(project_path)
+    end
+end
+
 -- Change directory only when path exists
 M.change_project_dir = function(project_path)
   if Path:new(project_path):exists() then
     vim.fn.execute("cd " .. project_path, "silent")
+    M.open_in_nvim_tree(project_path)
+
     return true
   else
     print("The path '" .. project_path .. "' does not exist")
