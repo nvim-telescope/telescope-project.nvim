@@ -16,6 +16,7 @@ local M = {}
 -- Variables that setup can change
 local base_dirs
 local hidden_files
+local order_by
 
 -- Allow user to set base_dirs
 local theme_opts = {}
@@ -31,6 +32,7 @@ M.setup = function(setup_config)
 
   base_dirs = setup_config.base_dirs or nil
   hidden_files = setup_config.hidden_files or false
+  order_by = setup_config.order_by or "recent"
   _git.update_git_repos(base_dirs)
 end
 
@@ -40,13 +42,13 @@ M.project = function(opts)
   pickers.new(opts, {
     prompt_title = 'Select a project',
     results_title = 'Projects',
-    finder = _finders.project_finder(opts, _utils.get_projects()),
+    finder = _finders.project_finder(opts, _utils.get_projects(order_by)),
     sorter = conf.file_sorter(opts),
     attach_mappings = function(prompt_bufnr, map)
 
       local refresh_projects = function()
         local picker = action_state.get_current_picker(prompt_bufnr)
-        local finder = _finders.project_finder(opts, _utils.get_projects())
+        local finder = _finders.project_finder(opts, _utils.get_projects(order_by))
         picker:refresh(finder, { reset_prompt = true })
       end
 
