@@ -121,6 +121,7 @@ M.open_in_nvim_tree = function(project_path)
     if status_ok then
       nvim_tree.change_dir(project_path)
       nvim_tree.open(project_path)
+      vim.cmd('wincmd p')
     end
 end
 
