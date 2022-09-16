@@ -70,10 +70,10 @@ Example key map config:
 
 ```lua
 vim.api.nvim_set_keymap(
-    'n',
-    '<C-p>',
-    ":lua require'telescope'.extensions.project.project{}<CR>",
-    {noremap = true, silent = true}
+        'n',
+        '<C-p>',
+        ":lua require'telescope'.extensions.project.project{}<CR>",
+        {noremap = true, silent = true}
 )
 ```
 
@@ -91,11 +91,11 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 
 ## Available setup settings:
 
-| Keys           | Description                                                   | Options                |
-|----------------|---------------------------------------------------------------|------------------------|
-| `base_dirs`    | Array of project base directory configurations                | table (default: nil)   |
-| `hidden_files` | Show hidden files in selected project                         | bool (default: false)  |
-
+| Keys           | Description                                                   | Options                   |
+|----------------|---------------------------------------------------------------|---------------------------|
+| `base_dirs`    | Array of project base directory configurations                | table (default: nil)      |
+| `hidden_files` | Show hidden files in selected project                         | bool (default: false)     |
+| `order_by`     | Order projects by `asc`, `desc`, `recent`                     | string (default: recent)  |
 Setup settings can be added when requiring telescope, as shown below:
 
 ```lua
@@ -110,7 +110,8 @@ require('telescope').setup {
         {path = '~/dev/src5', max_depth = 2},
       },
       hidden_files = true, -- default: false
-      theme = "dropdown"
+      theme = "dropdown",
+      order_by = "asc"
     }
   }
 }
