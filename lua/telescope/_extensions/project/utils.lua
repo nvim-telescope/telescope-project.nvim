@@ -35,7 +35,9 @@ M.get_projects = function(order_by)
     elseif order_by == "desc" then
         return a.title:lower() < b.title:lower()
     else
+      if a.last_accessed_time and b.last_accessed_time then
         return a.last_accessed_time > b.last_accessed_time
+      end
     end
   end)
 
@@ -93,7 +95,10 @@ end
 
 -- Standardized way of storing project to file
 M.store_project = function(file, project)
-  local line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "=" .. project.last_accessed_time .. "\n"
+  local line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "\n"
+  if project.last_accessed_time then
+    line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "=" .. project.last_accessed_time .. "\n"
+  end
   file:write(line)
 end
 
