@@ -91,11 +91,12 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 
 ## Available setup settings:
 
-| Keys           | Description                                                   | Options                   |
-|----------------|---------------------------------------------------------------|---------------------------|
-| `base_dirs`    | Array of project base directory configurations                | table (default: nil)      |
-| `hidden_files` | Show hidden files in selected project                         | bool (default: false)     |
-| `order_by`     | Order projects by `asc`, `desc`, `recent`                     | string (default: recent)  |
+| Keys                  | Description                                    | Options                  |
+|-----------------------|------------------------------------------------|--------------------------|
+| `base_dirs`           | Array of project base directory configurations | table (default: nil)     |
+| `hidden_files`        | Show hidden files in selected project          | bool (default: false)    |
+| `order_by`            | Order projects by `asc`, `desc`, `recent`      | string (default: recent) |
+| `sync_with_nvim_tree` | Sync projects with nvim tree plugin            | bool (default: false)    |
 Setup settings can be added when requiring telescope, as shown below:
 
 ```lua
@@ -111,7 +112,8 @@ require('telescope').setup {
       },
       hidden_files = true, -- default: false
       theme = "dropdown",
-      order_by = "asc"
+      order_by = "asc",
+      sync_with_nvim_tree = true, -- default false
     }
   }
 }
