@@ -18,9 +18,8 @@ M.get_selected_path = function(prompt_bufnr)
   return actions_state.get_selected_entry(prompt_bufnr).value
 end
 
--- Create a new project and add it to the list in the `telescope_projects_file`
-M.add_project = function()
-  local path = _git.try_and_find_git_path()
+
+local add_project_to_list = function(path)
   local projects = _utils.get_project_objects()
   local path_not_in_projects = true
 
@@ -40,6 +39,19 @@ M.add_project = function()
 
   io.close(file)
   print('Project added: ' .. path)
+end
+
+-- Create a new project based on current cwd only and add it 
+-- to the list in the `telescope_projects_file`
+M.add_project_cwd = function()
+  local path = vim.loop.cwd()
+  add_project_to_list(path)
+end
+
+-- Create a new project and add it to the list in the `telescope_projects_file`
+M.add_project = function()
+  local path = _git.try_and_find_git_path()
+  add_project_to_list(path)
 end
 
 -- Rename the selected project within the `telescope_projects_file`.
