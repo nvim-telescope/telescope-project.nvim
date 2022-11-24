@@ -91,16 +91,18 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 
 ## Available setup settings:
 
-| Keys                  | Description                                    | Options                  |
-|-----------------------|------------------------------------------------|--------------------------|
-| `base_dirs`           | Array of project base directory configurations | table (default: nil)     |
-| `hidden_files`        | Show hidden files in selected project          | bool (default: false)    |
-| `order_by`            | Order projects by `asc`, `desc`, `recent`      | string (default: recent) |
-| `sync_with_nvim_tree` | Sync projects with nvim tree plugin            | bool (default: false)    |
+| Keys                  | Description                                    | Options                                              |
+|-----------------------|------------------------------------------------|------------------------------------------------------|
+| `base_dirs`           | Array of project base directory configurations | table (default: nil)                                 |
+| `hidden_files`        | Show hidden files in selected project          | bool (default: false)                                |
+| `order_by`            | Order projects by `asc`, `desc`, `recent`      | string (default: recent)                             |
+| `sync_with_nvim_tree` | Sync projects with nvim tree plugin            | bool (default: false)                                |
+| `on_project_selected` | Custom handler when project is selected        | function(prompt_bufnr) (default: find project files) |
 Setup settings can be added when requiring telescope, as shown below:
 
 ```lua
 require('telescope').setup {
+  local project_actions = require("telescope._extensions.project.actions")
   extensions = {
     project = {
       base_dirs = {
@@ -114,6 +116,12 @@ require('telescope').setup {
       theme = "dropdown",
       order_by = "asc",
       sync_with_nvim_tree = true, -- default false
+      -- default for on_project_selected = find project files
+      on_project_selected = function(prompt_bufnr)
+        -- Do anything you want in here. For example:
+        project_actions.change_working_directory(prompt_bufnr, false)
+        require("harpoon.ui").nav_file(1)
+      end
     }
   }
 }
