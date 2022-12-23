@@ -19,6 +19,8 @@ M.project_finder = function(opts, projects)
   for _, project in pairs(projects) do
     if display_type == 'full' then
       project.display_path = '[' .. project.path .. ']'
+    elseif display_type == 'two-segment' then
+      project.display_path = '[' .. string.match(project.path, '([^/]+/[^/]+)/?$') .. ']'
     else
       project.display_path = ''
     end
