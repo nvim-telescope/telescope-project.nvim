@@ -53,7 +53,7 @@ M.project_finder = function(opts, projects)
       results = projects,
       entry_maker = function(project)
         project.value = project.path
-        project.ordinal = project.title
+        project.ordinal = project[search_by]
         project.display = make_display
         return project
       end,
