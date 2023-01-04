@@ -19,6 +19,8 @@ M.project_finder = function(opts, projects)
   for _, project in pairs(projects) do
     if display_type == 'full' then
       project.display_path = '[' .. project.path .. ']'
+    elseif display_type == 'two-segment' then
+      project.display_path = '[' .. string.match(project.path, '([^/]+/[^/]+)/?$') .. ']'
     else
       project.display_path = ''
     end
@@ -51,7 +53,7 @@ M.project_finder = function(opts, projects)
       results = projects,
       entry_maker = function(project)
         project.value = project.path
-        project.ordinal = project.title
+        project.ordinal = project[search_by]
         project.display = make_display
         return project
       end,

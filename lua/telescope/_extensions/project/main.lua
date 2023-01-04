@@ -35,6 +35,7 @@ M.setup = function(setup_config)
   hidden_files = setup_config.hidden_files or false
   order_by = setup_config.order_by or "recent"
   on_project_selected = setup_config.on_project_selected
+  search_by = setup_config.search_by or "title"
   sync_with_nvim_tree = setup_config.sync_with_nvim_tree or false
   _git.update_git_repos(base_dirs)
 end
