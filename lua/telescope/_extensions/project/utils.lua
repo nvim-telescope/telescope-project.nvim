@@ -126,7 +126,12 @@ M.open_in_nvim_tree = function(project_path)
     local status_ok, nvim_tree = pcall(require, "nvim-tree")
     if status_ok then
       nvim_tree.change_dir(project_path)
-      nvim_tree.open(project_path)
+      if type(nvim_tree.open) == "function" then
+        nvim_tree.open(project_path)
+      else
+        -- New way of opening nvim_tree
+        require("nvim-tree.api").tree.open()
+      end
       vim.cmd('wincmd p')
     end
 end
