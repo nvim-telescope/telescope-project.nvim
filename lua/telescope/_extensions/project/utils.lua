@@ -123,10 +123,11 @@ M.string_starts_with = function(text, start)
 end
 
 M.open_in_nvim_tree = function(project_path)
-    local status_ok, nvim_tree = pcall(require, "nvim-tree")
+    local status_ok, nvim_tree_api = pcall(require, "nvim-tree.api")
     if status_ok then
-      nvim_tree.change_dir(project_path)
-      nvim_tree.open(project_path)
+      local tree = nvim_tree_api.tree
+      tree.change_root(project_path)
+      tree.open(project_path)
       vim.cmd('wincmd p')
     end
 end
