@@ -97,7 +97,7 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 | `hidden_files`        | Show hidden files in selected project          | bool (default: false)                                |
 | `order_by`            | Order projects by `asc`, `desc`, `recent`      | string (default: recent)                             |
 | `sync_with_nvim_tree` | Sync projects with nvim tree plugin            | bool (default: false)                                |
-| `search_by`           | Telescope finder search by field (title/path)  | string (default: title)  |
+| `search_by`           | Telescope finder search by field (title/path)  | string or table (default: title). Can also be a table {"title", "path"} to search by both title and path  |
 | `on_project_selected` | Custom handler when project is selected        | function(prompt_bufnr) (default: find project files) |
 Setup settings can be added when requiring telescope, as shown below:
 
