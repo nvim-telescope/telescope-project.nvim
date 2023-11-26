@@ -148,6 +148,10 @@ end
 
 -- Change directory only when path exists
 M.change_project_dir = function(project_path, cd_scope)
+  if not cd_scope then
+    cd_scope = "tcd"
+  end
+
   if Path:new(project_path):exists() then
     M.update_last_accessed_project_time(project_path)
     vim.fn.execute(cd_scope .. " " .. project_path, "silent")
