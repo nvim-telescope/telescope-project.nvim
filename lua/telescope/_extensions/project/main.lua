@@ -37,6 +37,8 @@ M.setup = function(setup_config)
   on_project_selected = setup_config.on_project_selected
   search_by = setup_config.search_by or "title"
   sync_with_nvim_tree = setup_config.sync_with_nvim_tree or false
+  local cd_scope = setup_config.cd_scope or {"tab", "window"}
+  _actions.set_cd_scope(cd_scope)
   _git.update_git_repos(base_dirs)
 end
 
@@ -44,7 +46,7 @@ end
 M.project = function(opts)
   opts = vim.tbl_deep_extend("force", theme_opts, opts or {})
   pickers.new(opts, {
-    prompt_title = 'Select a project',
+    prompt_title = 'Select a project ' .. '(' .. _actions.get_cd_scope() .. ')',
     results_title = 'Projects',
     finder = _finders.project_finder(opts, _utils.get_projects(order_by)),
     sorter = conf.file_sorter(opts),
@@ -71,6 +73,7 @@ M.project = function(opts)
       map('n', 's', _actions.search_in_project_files)
       map('n', 'R', _actions.recent_project_files)
       map('n', 'w', _actions.change_working_directory)
+      map('n', 'o', _actions.next_cd_scope)
 
       map('i', '<c-d>', _actions.delete_project)
       map('i', '<c-v>', _actions.rename_project)
@@ -81,6 +84,7 @@ M.project = function(opts)
       map('i', '<c-s>', _actions.search_in_project_files)
       map('i', '<c-r>', _actions.recent_project_files)
       map('i', '<c-l>', _actions.change_working_directory)
+      map('i', '<c-o>', _actions.next_cd_scope)
 
       -- Workspace key mappings
       map('i', '<c-w>', _actions.change_workspace)
