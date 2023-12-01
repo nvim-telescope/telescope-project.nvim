@@ -27,9 +27,32 @@ describe("utils", function()
     it ("change project directory works", function()
       local test_dir = path:new("/tmp/test_dir")
       test_dir:mkdir()
-      assert.equal(true, utils.change_project_dir(test_dir.filename))
+      assert.equal(true, utils.change_project_dir(test_dir.filename, "cd"))
+      assert.equal(0, vim.api.nvim_call_function("haslocaldir", {1}))
       test_dir:rmdir()
       assert.equal(false, utils.change_project_dir(test_dir.filename))
+    end)
+
+    it ("local project directory works", function()
+      local test_dir = path:new("/tmp/test_dir")
+      test_dir:mkdir()
+      assert.equal(true, utils.change_project_dir(test_dir.filename, "lcd"))
+      assert.equal(1, vim.api.nvim_call_function("haslocaldir", {1}))
+      test_dir:rmdir()
+
+      -- Reset cwd
+      vim.fn.execute("cd")
+    end)
+
+    it ("tab project directory works", function()
+      local test_dir = path:new("/tmp/test_dir")
+      test_dir:mkdir()
+      assert.equal(true, utils.change_project_dir(test_dir.filename, "tcd"))
+      assert.equal(1, vim.api.nvim_call_function("haslocaldir", {-1}))
+      test_dir:rmdir()
+
+      -- Reset cwd
+      vim.fn.execute("cd")
     end)
 
   end)

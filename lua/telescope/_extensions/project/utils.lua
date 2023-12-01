@@ -147,10 +147,14 @@ M.update_last_accessed_project_time = function(project_path)
 end
 
 -- Change directory only when path exists
-M.change_project_dir = function(project_path)
+M.change_project_dir = function(project_path, cd_scope)
+  if not cd_scope then
+    cd_scope = "tcd"
+  end
+
   if Path:new(project_path):exists() then
     M.update_last_accessed_project_time(project_path)
-    vim.fn.execute("cd " .. project_path, "silent")
+    vim.fn.execute(cd_scope .. " " .. project_path, "silent")
     if sync_with_nvim_tree then
       M.open_in_nvim_tree(project_path)
     end

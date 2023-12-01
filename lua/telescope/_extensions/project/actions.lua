@@ -8,6 +8,26 @@ local _utils = require("telescope._extensions.project.utils")
 
 local M = {}
 
+-- current cd scope
+local cd_scope_index = 1
+-- list of user defined cd scopes
+local cd_scope_list
+-- vim command to change directory
+local cd_scope
+
+-- map cd scopes to vim commands
+local cd_scope_map = {
+  tab = "tcd",
+  window = "lcd",
+  global = "cd",
+}
+
+-- Update prompt title with current cd scope
+local update_prompt_title = function(prompt_bufnr, cd_scope)
+  local current_picker = actions_state.get_current_picker(prompt_bufnr)
+  current_picker.prompt_border:change_title('Select a project ' .. '(' .. cd_scope .. ')')
+end
+
 -- Extracts project title from current buffer selection
 M.get_selected_title = function(prompt_bufnr)
   return actions_state.get_selected_entry(prompt_bufnr).ordinal
@@ -112,7 +132,7 @@ end
 M.find_project_files = function(prompt_bufnr, hidden_files)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  local cd_successful = _utils.change_project_dir(project_path)
+  local cd_successful = _utils.change_project_dir(project_path, cd_scope)
   if cd_successful then
     vim.schedule(function()
       builtin.find_files({cwd = project_path, hidden = hidden_files})
@@ -130,7 +150,7 @@ M.browse_project_files = function(prompt_bufnr)
   end
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  local cd_successful = _utils.change_project_dir(project_path)
+  local cd_successful = _utils.change_project_dir(project_path, cd_scope)
   if cd_successful then
     vim.schedule(function()
       file_browser.exports.file_browser({ cwd = project_path })
@@ -143,7 +163,7 @@ end
 M.search_in_project_files = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  local cd_successful = _utils.change_project_dir(project_path)
+  local cd_successful = _utils.change_project_dir(project_path, "lcd")
   if cd_successful then
     vim.schedule(function()
       builtin.live_grep({cwd = project_path})
@@ -156,7 +176,7 @@ end
 M.recent_project_files = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions._close(prompt_bufnr, true)
-  local cd_successful = _utils.change_project_dir(project_path)
+  local cd_successful = _utils.change_project_dir(project_path, "lcd")
   if cd_successful then
     vim.schedule(function()
       builtin.oldfiles({cwd_only = true})
@@ -168,7 +188,35 @@ end
 M.change_working_directory = function(prompt_bufnr)
   local project_path = M.get_selected_path(prompt_bufnr)
   actions.close(prompt_bufnr)
-  _utils.change_project_dir(project_path)
+  _utils.change_project_dir(project_path, "tcd")
+end
+
+-- Load scopes table, select first scope
+M.set_cd_scope = function(scope)
+  cd_scope_list = scope
+  cd_scope = cd_scope_map[scope[1]]
+end
+
+-- Change to the next scope in table
+M.next_cd_scope = function(prompt_bufnr)
+  -- increment cd_scope_index
+  cd_scope_index = cd_scope_index + 1
+  -- reset cd_scope_index to 1 if it exceeds the length of the table
+  if cd_scope_index > #cd_scope_list then
+    cd_scope_index = 1
+  end
+
+  -- update prompt title and cd_scope
+  local scope = cd_scope_list[cd_scope_index]
+  update_prompt_title(prompt_bufnr, scope)
+
+  -- update cd_scope
+  cd_scope = cd_scope_map[scope]
+end
+
+-- Get current scope
+M.get_cd_scope = function()
+  return cd_scope_list[cd_scope_index]
 end
 
 return transform_mod(M)
