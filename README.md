@@ -14,6 +14,31 @@ that allows you to switch between projects.
 
 ## Setup
 
+Install the plugin with your preferred package manager.
+- [lazy](https://github.com/folke/lazy.nvim)
+```lua
+{
+    "nvim-telescope/telescope-project.nvim",
+    dependencies = { "nvim-telescope/telescope.nvim", "nvim-telescope/telescope-file-browser.nvim" }
+}
+```
+- [packer](https://github.com/wbthomason/packer.nvim)
+```lua
+use {
+    "nvim-telescope/telescope-project.nvim",
+    requires = { "nvim-telescope/telescope.nvim", "nvim-telescope/telescope-file-browser.nvim" }
+}
+```
+and You can setup the extension by adding the following to your config:
+
+
+```lua
+require'telescope'.load_extension('project')
+```
+
+You may skip explicitly loading extensions (they will then be lazy-loaded), but tab completions will not be available right away.
+
+
 You can setup the extension by adding the following to your config:
 
 ```lua
