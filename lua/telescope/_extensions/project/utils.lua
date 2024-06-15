@@ -86,7 +86,7 @@ end
 -- Parses path into project object (activated by default)
 M.get_project_from_path = function(path)
     -- `tostring` to use plenary path and paths defined as strings
-    local title = tostring(path):match("[^/]+/?$")
+    local title = tostring(path):match("[^\\/]+$")
     local workspace = 'w0'
     local activated = 1
     local line = title .. "=" .. path .. "=" .. workspace .. "=" .. activated
