@@ -81,9 +81,10 @@ vim.api.nvim_set_keymap(
 
 ## Available options:
 
-| Keys           | Description                                | Options                       |
-| -------------- | ------------------------------------------ | ----------------------------- |
-| `display_type` | Show the title and the path of the project | 'full' or 'minimal' (default) |
+| Keys             | Description                                | Options                       |
+| ---------------- | ------------------------------------------ | ----------------------------- |
+| `display_type`   | Show the title and the path of the project | 'full' or 'minimal' (default) |
+| `hide_workspace` | Hide the workspace of the project          | true or false (default)       |
 
 Options can be added when requiring telescope-project, as shown below:
 
