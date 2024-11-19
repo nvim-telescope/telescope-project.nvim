@@ -1,4 +1,5 @@
 local Path = require('plenary.path')
+local Project = require("telescope._extensions.project.project")
 
 local M = {}
 
@@ -64,23 +65,10 @@ M.get_project_paths = function()
 end
 
 -- Extracts information from telescope projects line
+---@param line string should not have a newline
+---@return Project The project encoded by the input line
 M.parse_project_line = function(line)
-  local title, path, workspace, activated, last_accessed_time = line:match("^(.-)=(.-)=(.-)=(.-)=(.-)$")
-  if not workspace then
-    title, path = line:match("^(.-)=(.-)$")
-    workspace = 'w0'
-  end
-  if not activated then
-    title, path, workspace = line:match("^(.-)=(.-)=(.-)$")
-    activated = 1
-  end
-  return {
-    title = title,
-    path = path,
-    workspace = workspace,
-    last_accessed_time = last_accessed_time,
-    activated = activated
-  }
+  return Project:decode(line)
 end
 
 -- Parses path into project object (activated by default)
@@ -89,17 +77,15 @@ M.get_project_from_path = function(path)
     local title = tostring(path):match("[^/]+/?$")
     local workspace = 'w0'
     local activated = 1
-    local line = title .. "=" .. path .. "=" .. workspace .. "=" .. activated
-    return M.parse_project_line(line)
+    return Project:new(title, path, workspace, activated)
 end
 
 -- Standardized way of storing project to file
+---@param file file* file handle from io.open()
+---@param project Project
 M.store_project = function(file, project)
-  local line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "\n"
-  if project.last_accessed_time then
-    line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "=" .. project.last_accessed_time .. "\n"
-  end
-  file:write(line)
+  local line_contents = Project.encode(project) -- this doesn't have a newline
+  file:write(line_contents .. '\n')
 end
 
 -- Trim whitespace for strings

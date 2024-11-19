@@ -18,16 +18,18 @@ M.project_finder = function(opts, projects)
   -- Loop over all of the projects and find the maximum length of
   -- each of the keys
   for _, project in pairs(projects) do
+    local display_path = project.path:gsub('\n', '\\n') -- otherwise the picker might not open due to a 'Cursor position outside buffer' error
     if display_type == 'full' then
-      project.display_path = '[' .. project.path .. ']'
+      project.display_path = '[' .. display_path .. ']'
     elseif display_type == 'two-segment' then
-      project.display_path = '[' .. string.match(project.path, '([^/]+/[^/]+)/?$') .. ']'
+      project.display_path = '[' .. string.match(display_path, '([^/]+/[^/]+)/?$') .. ']'
     else
       project.display_path = ''
     end
+    project.display_title = project.title:gsub('\n', '\\n')
     local project_path_exists = Path:new(project.path):exists()
     if not project_path_exists then
-      project.title = project.title .. " [deleted]"
+      project.display_title = project.display_title .. " [deleted]"
     end
     for key, value in pairs(widths) do
       widths[key] = math.max(value, strings.strdisplaywidth(project[key] or ''))
@@ -49,7 +51,7 @@ M.project_finder = function(opts, projects)
   local displayer = entry_display.create(create_opts)
   local make_display = function(project)
     local display_opts = {
-      { project.title },
+      { project.display_title },
       { project.display_path }
     }
 
