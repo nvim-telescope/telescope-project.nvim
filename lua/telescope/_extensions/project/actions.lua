@@ -53,6 +53,7 @@ local add_project_to_list = function(path)
   end
 
   if path_not_in_projects then
+    -- make a project object from the path
     local new_project = _utils.get_project_from_path(path)
     _utils.store_project(file, new_project)
   end
@@ -65,6 +66,11 @@ end
 -- to the list in the `telescope_projects_file`
 M.add_project_cwd = function()
   local path = vim.loop.cwd()
+  add_project_to_list(path)
+end
+
+-- Create a new project and add it to the list in the `telescope_projects_file`
+M.add_project_path = function(path)
   add_project_to_list(path)
 end
 
