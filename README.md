@@ -12,9 +12,34 @@ that allows you to switch between projects.
 - [telescope.nvim](https://github.com/nvim-telescope/telescope.nvim) (required)
 - [telescope-file-browser.nvim](https://github.com/nvim-telescope/telescope-file-browser.nvim) (optional, only for `file_browser` action)
 
+## Installation
+
+### Lazy.nvim
+
+```lua
+{
+    'nvim-telescope/telescope-project.nvim',
+    dependencies = {
+        'nvim-telescope/telescope.nvim',
+    },
+}
+```
+
+### packer.nvim
+
+```lua
+use {
+    'nvim-telescope/telescope-project.nvim',
+    requires = {
+        'nvim-telescope/telescope.nvim',
+    },
+}
+```
+
+
 ## Setup
 
-You can setup the extension by adding the following to your config:
+You can set up the extension by adding the following to your config:
 
 ```lua
 require'telescope'.load_extension('project')
