@@ -7,7 +7,7 @@ M.telescope_projects_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
 -- The file path to telescope workspaces
 M.telescope_workspaces_file = vim.fn.stdpath('data') .. '/telescope-workspaces.txt'
 
--- Initialize file if does not exist
+---Initialize file if does not exist
 M.init_files = function()
   local projects_file_path = Path:new(M.telescope_projects_file)
   if not projects_file_path:exists() then
@@ -19,7 +19,14 @@ M.init_files = function()
   end
 end
 
--- Fetches project information to be passed to picker
+---Fetches project information to be passed to picker
+---
+---The results will only include activated projects
+---@param order_by string
+---|"'asc'" # compares alphabetically, case-insensitive
+---|"'desc'"
+---|"'recent'" # uses last_accessed_time, most recent first
+---@return Project[]
 M.get_projects = function(order_by)
   local filtered_projects = {}
   for _, project in pairs(M.get_project_objects()) do
@@ -44,7 +51,8 @@ M.get_projects = function(order_by)
   return filtered_projects
 end
 
--- Get project info for all (de)activated projects
+---Get project info for all (de)activated projects from storage file
+---@return Project[]
 M.get_project_objects = function()
   local projects = {}
   for line in io.lines(M.telescope_projects_file) do
@@ -54,7 +62,8 @@ M.get_project_objects = function()
   return projects
 end
 
--- Extract paths from all project objects
+---Extract paths from all project objects from storage file
+---@return string[]
 M.get_project_paths = function()
   local paths = {}
   for _, project in pairs(M.get_project_objects()) do
@@ -63,7 +72,9 @@ M.get_project_paths = function()
   return paths
 end
 
--- Extracts information from telescope projects line
+---Read a telescope projects file line into a project object
+---@param line string Without any final newline
+---@return Project
 M.parse_project_line = function(line)
   local title, path, workspace, activated, last_accessed_time = line:match("^(.-)=(.-)=(.-)=(.-)=(.-)$")
   if not workspace then
@@ -83,7 +94,9 @@ M.parse_project_line = function(line)
   }
 end
 
--- Parses path into project object (activated by default)
+---Parses path into project object (activated by default)
+---@param path string
+---@return Project project with defaults: workspace='w0', activated=1
 M.get_project_from_path = function(path)
     -- `tostring` to use plenary path and paths defined as strings
     local title = tostring(path):match("[^/]+/?$")
@@ -93,7 +106,10 @@ M.get_project_from_path = function(path)
     return M.parse_project_line(line)
 end
 
--- Standardized way of storing project to file
+---Standardized way of storing project to file
+---@param file file* An io.file file handle
+---@param project Project The project to append to M.telescope_projects_file
+---@see io.file
 M.store_project = function(file, project)
   local line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "\n"
   if project.last_accessed_time then
@@ -102,12 +118,19 @@ M.store_project = function(file, project)
   file:write(line)
 end
 
--- Trim whitespace for strings
+---Trim whitespace for strings
+---@param s string
+---@return string
 M.trim = function(s)
   return s:match( "^%s*(.-)%s*$" )
 end
 
--- Check if value exists in table
+---Check if a path is in a list of paths.
+---
+---Paths will be compared without surrounding whitespace.
+---@param tbl string[] A list of project paths
+---@param val string A project path
+---@return boolean
 M.has_value = function(tbl, val)
   for _, value in ipairs(tbl) do
     if M.trim(value) == M.trim(val) then
@@ -117,11 +140,15 @@ M.has_value = function(tbl, val)
   return false
 end
 
--- Check that string starts with given value
+---Check that text starts with given value
+---@param text string The text to check in
+---@param start string The prefix to check for
+---@return boolean
 M.string_starts_with = function(text, start)
    return string.sub(text, 1, string.len(start)) == start
 end
 
+---@param project_path string
 M.open_in_nvim_tree = function(project_path)
     local status_ok, nvim_tree_api = pcall(require, "nvim-tree.api")
     if status_ok then
@@ -132,7 +159,11 @@ M.open_in_nvim_tree = function(project_path)
     end
 end
 
--- Update last accessed time on project change
+---Update last accessed time on project change to current time
+---
+---Uses os.time() to get the current time.
+---@param project_path string
+---@see os.time
 M.update_last_accessed_project_time = function(project_path)
   local projects = M.get_project_objects()
   local file = io.open(M.telescope_projects_file, "w")
@@ -146,7 +177,13 @@ M.update_last_accessed_project_time = function(project_path)
   io.close(file)
 end
 
--- Change directory only when path exists
+---Change directory only when path exists
+---@param project_path string
+---@param cd_scope? string The vim command to use to change directory
+---|"'cd'"
+---|"'tcd'" # default
+---|"'lcd'"
+---@return boolean success Returns true if the directory was changed
 M.change_project_dir = function(project_path, cd_scope)
   if not cd_scope then
     cd_scope = "tcd"
@@ -166,7 +203,9 @@ M.change_project_dir = function(project_path, cd_scope)
   end
 end
 
--- Normalize the base_dirs configurations
+---Normalize the base_dirs configurations
+---@param base_dirs (string|BaseDirConfig)[]
+---@return BaseDirConfig[]
 M.normalize_base_dir_configs = function(base_dirs)
   local normalize_path = function(dir)
     if type(dir) == "table" then
