@@ -1,4 +1,5 @@
 local Path = require('plenary.path')
+local Project = require("telescope._extensions.project.project")
 
 local M = {}
 
@@ -74,24 +75,9 @@ end
 
 ---Read a telescope projects file line into a project object
 ---@param line string Without any final newline
----@return Project
+---@return Project The project encoded by the input line
 M.parse_project_line = function(line)
-  local title, path, workspace, activated, last_accessed_time = line:match("^(.-)=(.-)=(.-)=(.-)=(.-)$")
-  if not workspace then
-    title, path = line:match("^(.-)=(.-)$")
-    workspace = 'w0'
-  end
-  if not activated then
-    title, path, workspace = line:match("^(.-)=(.-)=(.-)$")
-    activated = 1
-  end
-  return {
-    title = title,
-    path = path,
-    workspace = workspace,
-    last_accessed_time = last_accessed_time,
-    activated = activated
-  }
+  return Project:decode(line)
 end
 
 ---Parses path into project object (activated by default)
@@ -103,8 +89,7 @@ M.get_project_from_path = function(path)
     local title = vim.fs.basename(vim.fs.normalize(path))
     local workspace = 'w0'
     local activated = 1
-    local line = title .. "=" .. path .. "=" .. workspace .. "=" .. activated
-    return M.parse_project_line(line)
+    return Project:new(title, path, workspace, activated)
 end
 
 ---Standardized way of storing project to file
@@ -112,11 +97,8 @@ end
 ---@param project Project The project to append to M.telescope_projects_file
 ---@see io.file
 M.store_project = function(file, project)
-  local line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "\n"
-  if project.last_accessed_time then
-    line = project.title .. "=" .. project.path .. "=" .. project.workspace .. "=" .. project.activated .. "=" .. project.last_accessed_time .. "\n"
-  end
-  file:write(line)
+  local line_contents = Project.encode(project) -- this doesn't have a newline
+  file:write(line_contents .. '\n')
 end
 
 ---Trim whitespace for strings
