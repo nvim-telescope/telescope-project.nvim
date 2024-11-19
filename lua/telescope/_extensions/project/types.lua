@@ -21,4 +21,3 @@
 ---@field max_depth integer Defaults to 3
 
 ---@alias BaseDirSpec string|BaseDirArray|BaseDirPath
-
