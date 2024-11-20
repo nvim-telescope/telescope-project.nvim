@@ -204,8 +204,8 @@ M.change_project_dir = function(project_path, cd_scope)
 end
 
 ---Normalize the base_dirs configurations
----@param base_dirs (string|BaseDirConfig)[]
----@return BaseDirConfig[]
+---@param base_dirs BaseDirSpec[]
+---@return BaseDirNormal[]
 M.normalize_base_dir_configs = function(base_dirs)
   local normalize_path = function(dir)
     if type(dir) == "table" then
