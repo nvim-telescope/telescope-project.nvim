@@ -99,7 +99,8 @@ end
 ---@return Project project with defaults: workspace='w0', activated=1
 M.get_project_from_path = function(path)
     -- `tostring` to use plenary path and paths defined as strings
-    local title = tostring(path):match("[^/]+/?$")
+    path = tostring(path)
+    local title = vim.fs.basename(vim.fs.normalize(path))
     local workspace = 'w0'
     local activated = 1
     local line = title .. "=" .. path .. "=" .. workspace .. "=" .. activated
@@ -173,7 +174,6 @@ M.update_last_accessed_project_time = function(project_path)
     end
     M.store_project(file, project)
   end
-
   io.close(file)
 end
 
