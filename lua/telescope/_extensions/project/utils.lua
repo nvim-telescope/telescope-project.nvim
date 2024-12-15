@@ -23,10 +23,7 @@ end
 ---Fetches project information to be passed to picker
 ---
 ---The results will only include activated projects
----@param order_by string
----|"'asc'" # compares alphabetically, case-insensitive
----|"'desc'"
----|"'recent'" # uses last_accessed_time, most recent first
+---@param order_by OrderBy
 ---@return Project[]
 M.get_projects = function(order_by)
   local filtered_projects = {}

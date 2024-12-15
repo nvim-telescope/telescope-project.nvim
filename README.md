@@ -106,21 +106,10 @@ vim.api.nvim_set_keymap(
 
 ## Available options:
 
-| Keys             | Description                                | Options                       |
-| ---------------- | ------------------------------------------ | ----------------------------- |
-| `display_type`   | Show the title and the path of the project | 'full' or 'minimal' (default) |
-| `hide_workspace` | Hide the workspace of the project          | true or false (default)       |
-
-Options can be added when requiring telescope-project, as shown below:
-
-```lua
-lua require'telescope'.extensions.project.project{ display_type = 'full' }
-```
-
-## Available setup settings:
-
 | Keys                  | Description                                    | Options                                              |
 |-----------------------|------------------------------------------------|------------------------------------------------------|
+| `display_type`        | Show the title and the path of the project     | 'full' or 'minimal' (default)                        |
+| `hide_workspace`      | Hide the workspace of the project              | true or false (default)                              |
 | `base_dirs`           | Array of project base directory configurations | table (default: nil)                                 |
 | `hidden_files`        | Show hidden files in selected project          | bool (default: false)                                |
 | `order_by`            | Order projects by `asc`, `desc`, `recent`      | string (default: recent)                             |
@@ -128,8 +117,15 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 | `search_by`           | Telescope finder search by field (title/path)  | string or table (default: title). Can also be a table {"title", "path"} to search by both title and path  |
 | `on_project_selected` | Custom handler when project is selected        | function(prompt_bufnr) (default: find project files) |
 | `cd_scope`            | Array of cd scopes: `tab`, `window`, `global`  | table (default: {"tab", "window"})                   |
-| `mappings`            | Sets the mappings inside the telescope view    | table (default: the mappings described bellow)        |
-Setup settings can be added when requiring telescope, as shown below:
+| `mappings`            | Sets the mappings inside the telescope view    | table (default: the mappings described bellow)       |
+
+Options can be added when launching the telescope-project picker, as shown below:
+
+```lua
+lua require'telescope'.extensions.project.project{ display_type = 'full' }
+```
+
+The same options can also be provided at setup time to override the defaults, as shown below:
 
 ```lua
 require('telescope').setup {
