@@ -66,12 +66,12 @@ M.project_finder = function(opts, projects)
       results = projects,
       entry_maker = function(project)
         project.value = project.path
-        if type(search_by) == "string" then
-          project.ordinal = project[search_by]
+        if type(opts.search_by) == "string" then
+          project.ordinal = project[opts.search_by]
         end
-        if type(search_by) == "table" then
+        if type(opts.search_by) == "table" then
           project.ordinal = ""
-          for _, property in ipairs(search_by) do
+          for _, property in ipairs(opts.search_by) do
             project.ordinal = project.ordinal .. " " .. project[property]
           end
         end
