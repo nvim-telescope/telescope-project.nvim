@@ -46,7 +46,7 @@ require'telescope'.load_extension('project')
 
 You may skip explicitly loading extensions (they will then be lazy-loaded), but tab completions will not be available right away.
 
-## Available functions:
+## Available functions
 
 ### Project
 
@@ -56,7 +56,7 @@ The `projects` picker:
 require'telescope'.extensions.project.project{}
 ```
 
-## Default mappings (normal mode):
+## Default mappings (normal mode)
 
 | Key | Description                                                   |
 | --- | ------------------------------------------------------------- |
@@ -70,7 +70,7 @@ require'telescope'.extensions.project.project{}
 | `f` | find a file within your project (same as \<CR\>)              |
 | `o` | change current cd scope                                       |
 
-## Default mappings (insert mode):
+## Default mappings (insert mode)
 
 | Key     | Description                                                   |
 | ------- | ------------------------------------------------------------- |
@@ -97,25 +97,13 @@ vim.api.nvim_set_keymap(
 )
 ```
 
-## Available options:
-
-| Keys             | Description                                | Options                       |
-| ---------------- | ------------------------------------------ | ----------------------------- |
-| `display_type`   | Show the title and the path of the project | 'full' or 'minimal' (default) |
-| `hide_workspace` | Hide the workspace of the project          | true or false (default)       |
-
-Options can be added when requiring telescope-project, as shown below:
-
-```lua
-lua require'telescope'.extensions.project.project{ display_type = 'full' }
-```
-
-## Available setup settings:
+## Available options
 
 | Keys                  | Description                                    | Options                                                                                                  |
 | --------------------- | ---------------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `display_type`        | Show the title and the path of the project     | 'full' or 'minimal' (default)                                                                            |
+| `hide_workspace`      | Hide the workspace of the project              | true or false (default)                                                                                  |
 | `base_dirs`           | Array of project base directory configurations | table (default: nil)                                                                                     |
-| `ignore_missing_dirs` | Don't show an error if base dirs are missing   | bool (default: false)                                                                                    |
 | `hidden_files`        | Show hidden files in selected project          | bool (default: false)                                                                                    |
 | `order_by`            | Order projects by `asc`, `desc`, `recent`      | string (default: recent)                                                                                 |
 | `sync_with_nvim_tree` | Sync projects with nvim tree plugin            | bool (default: false)                                                                                    |
@@ -124,7 +112,13 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 | `cd_scope`            | Array of cd scopes: `tab`, `window`, `global`  | table (default: {"tab", "window"})                                                                       |
 | `mappings`            | Sets the mappings inside the telescope view    | table (default: the mappings described bellow)                                                           |
 
-Setup settings can be added when requiring telescope, as shown below:
+Options can be added when launching the telescope-project picker, as shown below:
+
+```lua
+lua require'telescope'.extensions.project.project{ display_type = 'full' }
+```
+
+The same options can also be provided at setup time to override the defaults, as shown below:
 
 ```lua
 require('telescope').setup {

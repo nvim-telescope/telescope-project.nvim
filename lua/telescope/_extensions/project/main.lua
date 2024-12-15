@@ -13,6 +13,20 @@ local _utils = require("telescope._extensions.project.utils")
 
 local M = {}
 
+---@class Config
+---@field base_dirs nil | BaseDirSpec[] Array of project base directory configurations
+---@field hidden_files boolean Show hidden files in selected project
+---@field order_by OrderBy "recent", or alphabetically "asc" or "desc"
+---@field on_project_selected fun(prompt_bufnr: number, hidden_files: boolean) Custom handler when project is selected
+---@field hide_workspace boolean
+---@field display_type string
+---|"'full'"
+---|"'minimal'" (default)
+---@field search_by ProjectFieldName
+---@field sync_with_nvim_tree boolean
+---@field cd_scope table Array of cd scopes: tab, window, global
+---@field theme string | nil a telescope theme name
+---@field mappings table telescope-format table of mappings for the project telescope picker
 local default_config = {
   base_dirs = nil,
   hidden_files = false,
@@ -52,6 +66,7 @@ local default_config = {
     },
   },
 }
+
 -- copy of default_config that setup can change
 local config
 
