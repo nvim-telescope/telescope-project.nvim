@@ -7,6 +7,13 @@
 ---@field activated number
 ---@field last_accessed_time number? A number returned by [os.time](lua://os.time)
 
+---@alias ProjectFieldName
+---|"'title'"
+---|"'path'"
+---|"'workspace'"
+---|"'activated'"
+---|"'last_accessed_time'"
+
 ---@class BaseDirMaxDepth
 ---@field max_depth? integer Defaults to 3
 
@@ -22,3 +29,7 @@
 
 ---@alias BaseDirSpec string|BaseDirArray|BaseDirPath
 
+---@alias OrderBy
+---|"'asc'" # compares alphabetically, case-insensitive
+---|"'desc'"
+---|"'recent'" # uses last_accessed_time, most recent first
