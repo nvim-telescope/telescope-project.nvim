@@ -122,6 +122,7 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 | Keys                  | Description                                    | Options                                              |
 |-----------------------|------------------------------------------------|------------------------------------------------------|
 | `base_dirs`           | Array of project base directory configurations | table (default: nil)                                 |
+| `ignore_missing_dirs` | Don't show an error if base dirs are missing   | bool (default: false)                                 |
 | `hidden_files`        | Show hidden files in selected project          | bool (default: false)                                |
 | `order_by`            | Order projects by `asc`, `desc`, `recent`      | string (default: recent)                             |
 | `sync_with_nvim_tree` | Sync projects with nvim tree plugin            | bool (default: false)                                |
@@ -143,6 +144,7 @@ require('telescope').setup {
         {path = '~/dev/src4'},
         {path = '~/dev/src5', max_depth = 2},
       },
+      ignore_missing_dirs = true, -- default: false
       hidden_files = true, -- default: false
       theme = "dropdown",
       order_by = "asc",
