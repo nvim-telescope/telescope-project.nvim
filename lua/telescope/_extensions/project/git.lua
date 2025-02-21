@@ -6,21 +6,22 @@ local scan = require("plenary.scandir")
 local M = {}
 
 -- Find and store git repos if base_dirs provided
-M.update_git_repos = function(base_dirs)
+M.update_git_repos = function(base_dirs, ignore_missing_dirs)
   if base_dirs then
     local normalized_config = _utils.normalize_base_dir_configs(base_dirs)
-    local repo_paths  = M.search_for_git_repos(normalized_config)
+    local repo_paths  = M.search_for_git_repos(normalized_config, ignore_missing_dirs)
     local git_projects = M.parse_git_repo_paths(repo_paths)
     M.save_git_repos(git_projects)
   end
 end
 
 -- Recurses directories under base directories to find all git projects
-M.search_for_git_repos = function(base_dirs)
+M.search_for_git_repos = function(base_dirs, ignore_missing_dirs)
   return iter.iter(base_dirs)
     :map(function(base_dir)
       local git_dirs = scan.scan_dir(vim.fn.expand(base_dir.path), {
         depth = base_dir.max_depth,
+        silent = ignore_missing_dirs,
         add_dirs = true,
         hidden = true,
         search_pattern = "%.git$"

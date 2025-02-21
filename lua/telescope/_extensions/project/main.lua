@@ -15,6 +15,7 @@ local M = {}
 
 -- Variables that setup can change
 local base_dirs
+local ignore_missing_dirs
 local hidden_files
 local order_by
 local on_project_selected
@@ -59,6 +60,7 @@ M.setup = function(setup_config)
   end
 
   base_dirs = setup_config.base_dirs or nil
+  ignore_missing_dirs = setup_config.ignore_missing_dirs or false
   hidden_files = setup_config.hidden_files or false
   order_by = setup_config.order_by or "recent"
   on_project_selected = setup_config.on_project_selected
@@ -66,7 +68,7 @@ M.setup = function(setup_config)
   sync_with_nvim_tree = setup_config.sync_with_nvim_tree or false
   local cd_scope = setup_config.cd_scope or { "tab", "window" }
   _actions.set_cd_scope(cd_scope)
-  _git.update_git_repos(base_dirs)
+  _git.update_git_repos(base_dirs, ignore_missing_dirs)
 
   local config_maps = setup_config.mappings or {}
   for mode, maps in pairs(config_maps) do
