@@ -9,8 +9,7 @@ local M = {}
 -- and list of projects
 M.project_finder = function(opts, projects)
   local display_type = opts.display_type
-  local show_workspace = not opts.hide_workspace
-  local widths = {
+    local widths = {
     title = 0,
     display_path = 0,
   }
@@ -44,20 +43,12 @@ M.project_finder = function(opts, projects)
     }
   }
 
-  if show_workspace then
-    table.insert(create_opts.items, 2, { width = widths.workspace })
-  end
-
   local displayer = entry_display.create(create_opts)
   local make_display = function(project)
     local display_opts = {
       { project.display_title },
       { project.display_path }
     }
-
-    if show_workspace then
-      table.insert(display_opts, 2, { project.workspace })
-    end
 
     return displayer(display_opts)
   end

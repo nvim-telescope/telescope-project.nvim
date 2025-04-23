@@ -5,18 +5,12 @@ local M = {}
 
 -- The file path to telescope projects
 M.telescope_projects_file = vim.fn.stdpath('data') .. '/telescope-projects.txt'
--- The file path to telescope workspaces
-M.telescope_workspaces_file = vim.fn.stdpath('data') .. '/telescope-workspaces.txt'
 
 ---Initialize file if does not exist
 M.init_files = function()
   local projects_file_path = Path:new(M.telescope_projects_file)
   if not projects_file_path:exists() then
     projects_file_path:touch()
-  end
-  local workspaces_file_path = Path:new(M.telescope_workspaces_file)
-  if not workspaces_file_path:exists() then
-    workspaces_file_path:touch()
   end
 end
 
@@ -82,14 +76,13 @@ end
 
 ---Parses path into project object (activated by default)
 ---@param path string
----@return Project project with defaults: workspace='w0', activated=1
+---@return Project project with defaults: activated=1
 M.get_project_from_path = function(path)
     -- `tostring` to use plenary path and paths defined as strings
     path = tostring(path)
     local title = vim.fs.basename(vim.fs.normalize(path))
-    local workspace = 'w0'
     local activated = 1
-    return Project:new(title, path, workspace, activated)
+    return Project:new(title, path, activated)
 end
 
 ---Standardized way of storing project to file

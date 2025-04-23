@@ -102,7 +102,6 @@ vim.api.nvim_set_keymap(
 | Keys             | Description                                | Options                       |
 | ---------------- | ------------------------------------------ | ----------------------------- |
 | `display_type`   | Show the title and the path of the project | 'full' or 'minimal' (default) |
-| `hide_workspace` | Hide the workspace of the project          | true or false (default)       |
 
 Options can be added when requiring telescope-project, as shown below:
 
@@ -185,4 +184,3 @@ require('telescope').setup {
 
 - order projects by last opened :heavy_check_mark:
 - add all (git-enabled) subdirectories automatically :heavy_check_mark:
-- workspaces :construction:
