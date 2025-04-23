@@ -43,7 +43,6 @@ local mappings = {
     ['<c-r>'] = _actions.recent_project_files,
     ['<c-l>'] = _actions.change_working_directory,
     ['<c-o>'] = _actions.next_cd_scope,
-    ['<c-c>'] = _actions.change_workspace,
   }
 }
 
