@@ -127,8 +127,8 @@ lua require'telescope'.extensions.project.project{ display_type = 'full' }
 Setup settings can be added when requiring telescope, as shown below:
 
 ```lua
+local project_actions = require("telescope._extensions.project.actions")
 require('telescope').setup {
-  local project_actions = require("telescope._extensions.project.actions")
   extensions = {
     project = {
       base_dirs = {
