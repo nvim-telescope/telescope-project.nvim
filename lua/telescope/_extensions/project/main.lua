@@ -29,6 +29,7 @@ local M = {}
 ---@field mappings table telescope-format table of mappings for the project telescope picker
 local default_config = {
   base_dirs = nil,
+  ignore_missing_dirs = false,
   hidden_files = false,
   order_by = "recent",
   on_project_selected = _actions.find_project_files,
@@ -82,7 +83,7 @@ M.setup = function(setup_config)
     theme_opts = themes["get_" .. config.theme]()
   end
   _actions.set_cd_scope(config.cd_scope)
-  _git.update_git_repos(config.base_dirs)
+  _git.update_git_repos(config.base_dirs, config.ingore_missing_dirs)
 end
 
 -- This creates a picker with a list of all of the projects
